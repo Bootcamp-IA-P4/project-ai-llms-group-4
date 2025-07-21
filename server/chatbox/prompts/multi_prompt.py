@@ -1,6 +1,10 @@
 from langchain.prompts import PromptTemplate
 
-MULTI_PROMPT_ROUTER_TEMPLATE = """Given a raw text input to a \
+MULTI_PROMPT_ROUTER_TEMPLATE = PromptTemplate(
+    imput_variables=["input", "destinations"],
+    template="""
+
+Given a raw text input to a \
 language model select the model prompt best suited for the input. \
 You will be given the names of the available prompts and a \
 description of what the prompt is best suited for. \
@@ -28,4 +32,6 @@ if you don't think any modifications are needed.
 << INPUT >>
 {{input}}
 
-<< OUTPUT (remember to include the ```json)>>"""
+<< OUTPUT (remember to include the ```json)>>
+"""
+)
