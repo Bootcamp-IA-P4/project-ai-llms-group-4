@@ -196,3 +196,6 @@ cython_debug/
 .cursorindexingignore
 # Local Netlify folder
 .netlify
+
+#json
+*.json
