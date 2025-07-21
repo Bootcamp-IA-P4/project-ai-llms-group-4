@@ -17,17 +17,17 @@ Al final pon algo como 'Síguenos para más consejos'.
 
 
 
-def main(user_text, debug=False):
+def main(user_text, verbose=False):
     """
     Main function to run the extraction and generation process.
     """
-    if debug:
-        print("Debug mode is ON")
+    if verbose:
+        print("Verbose mode is ON")
         print("User input:", user_text)
 
     # Paso 1: extraer información del texto
     extracted = extract_chain.invoke({"user_input": user_text})
-    if debug:
+    if verbose:
         print("🧪 Extracted output:\n", extracted.content)
 
 
@@ -48,14 +48,14 @@ def main(user_text, debug=False):
     # Paso 4: generar contenido
 
     post_result = generation_chain.invoke(parsed_data)
-    if debug :
+    if verbose :
         print("\n✅ Generated post:\n", post_result.content)
     return post_result.content
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--input_text", type=str, default=default_user_text, help="Texto de entrada del usuario para generar contenido")
-    parser.add_argument("--debug", action="store_true", help="Muestra información detallada de ejecución")
+    parser.add_argument("--verbose", action="store_true", help="Muestra información detallada de ejecución")
     args = parser.parse_args()
 
-    main(user_text=args.input_text, debug=args.debug)
+    main(user_text=args.input_text, verbose=args.verbose)
