@@ -1,4 +1,4 @@
-from app.generator import generate_text
+from backend.generator import generate_text
 
 if __name__ == "__main__":
     topic = input("¿Sobre qué tema quieres generar contenido? ")

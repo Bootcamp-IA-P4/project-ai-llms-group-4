@@ -1,6 +1,6 @@
 import streamlit as st
-from app.generate_with_rag import generate_text_with_context
-from app.image_generator import generate_image_url
+from backend.generate_with_rag import generate_text_with_context
+from backend.image_generator import generate_image_url
 import streamlit.components.v1 as components
 
 st.set_page_config(page_title="Generador IA de Contenidos", layout="centered")

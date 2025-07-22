@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
-from app.retriever import get_relevant_chunks
-from app.generator import generate_text
+from backend.retriever import get_relevant_chunks
+from backend.generator import generate_text
 
 # Cargar variables de entorno si se requieren
 load_dotenv()
