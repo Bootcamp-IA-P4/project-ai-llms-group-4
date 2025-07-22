@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_pinecone import Pinecone as PineconeVectorStore
 
-# 1. Cargar variables de entorno (.env en backend/)
+# 1. Cargamos las variables de entorno
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '..', '.env'))
 
 # 2. Modelo de embeddings
@@ -14,13 +14,12 @@ INDEX_NAME = "generated-posts"   # Cambia si tu index es distinto
 API_KEY = os.getenv("PINECONE_API_KEY")
 ENVIRONMENT = os.getenv("PINECONE_ENV")
 
-# 4. Conexión a Pinecone VectorStore con la nueva API
+# 4. Conectamos a Pinecone VectorStore
 vector_db = PineconeVectorStore.from_existing_index(
     index_name=INDEX_NAME,
-    embedding=embedding_model,
-    api_key=API_KEY,
-    environment=ENVIRONMENT,
+    embedding=embedding_model
 )
+
 
 def save_post(
     text,
