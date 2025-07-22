@@ -1,26 +1,25 @@
 import os
 from dotenv import load_dotenv
-from pinecone import Pinecone, ServerlessSpec
-from langchain_community.vectorstores import Pinecone as PineconeVectorStore
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_pinecone import Pinecone as PineconeVectorStore
 
-# Cargamos las variables de entorno necesarias para Pinecone
+# 1. Cargar variables de entorno (.env en backend/)
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '..', '.env'))
 
-# Seleccionamos el modelo de embeddings (nos aseguramos de que la dimensión coincide con la del índice en Pinecone)
+# 2. Modelo de embeddings
 embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 
-# Especificamos el nombre EXACTO de tu índice en Pinecone
-INDEX_NAME = "generated-posts"
-ENVIRONMENT = os.getenv("PINECONE_ENV")
+# 3. Pinecone index config
+INDEX_NAME = "generated-posts"   # Cambia si tu index es distinto
 API_KEY = os.getenv("PINECONE_API_KEY")
+ENVIRONMENT = os.getenv("PINECONE_ENV")
 
-# Conectamos con el índice de Pinecone
-vector_db = PineconeVectorStore(
+# 4. Conexión a Pinecone VectorStore con la nueva API
+vector_db = PineconeVectorStore.from_existing_index(
     index_name=INDEX_NAME,
     embedding=embedding_model,
+    api_key=API_KEY,
     environment=ENVIRONMENT,
-    api_key=API_KEY
 )
 
 def save_post(
@@ -47,7 +46,6 @@ def save_post(
         "model": model,
         "image_url": image_url
     }
-    # Añadimos el texto (embedding) y sus metadatos al vector DB
     vector_db.add_texts([text], metadatas=[metadata])
     print("✅ Post guardado en Pinecone con metadatos:", metadata)
 
@@ -60,7 +58,7 @@ def search_similar(query, top_k=3):
     return results
 
 if __name__ == "__main__":
-    # Ejemplo: guardar un post de prueba
+    # Prueba: guardar un post
     save_post(
         text="Tips for creating viral content on Instagram.",
         prompt="Generate tips for viral Instagram posts.",
