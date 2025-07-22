@@ -196,3 +196,11 @@ cython_debug/
 .cursorindexingignore
 # Local Netlify folder
 .netlify
+
+# Image files
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.tiff
