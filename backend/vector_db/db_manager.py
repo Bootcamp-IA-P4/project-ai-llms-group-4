@@ -1,26 +1,30 @@
 import os
 from dotenv import load_dotenv
-import pinecone
-from langchain.vectorstores import Pinecone
-from langchain.embeddings import HuggingFaceEmbeddings
+from pinecone import Pinecone, ServerlessSpec
+from langchain_community.vectorstores import Pinecone as PineconeVectorStore
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
 # 1. Cargamos las variables de entorno necesarias para Pinecone
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '..', '.env'))
 
 # 2. Inicializamos el cliente de Pinecone usando nuestra API Key y entorno
-pinecone.init(
-    api_key=os.getenv("PINECONE_API_KEY"),
-    environment=os.getenv("PINECONE_ENV")
-)
+pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
 
 # 3. Seleccionamos el modelo de embeddings (nos aseguramos de que la dimensión coincide con la del índice en Pinecone)
 embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 
 # 4. Especificamos el nombre EXACTO de tu índice en Pinecone
 INDEX_NAME = "generated-posts"
-
+ENVIRONMENT = os.getenv("PINECONE_ENV")
 # 5. Conectamos con el índice de Pinecone usando LangChain
-vector_db = Pinecone.from_existing_index(INDEX_NAME, embedding_model)
+vector_db = PineconeVectorStore.from_existing_index(
+    INDEX_NAME,
+    embedding_model,
+    pool_kwargs={
+        "pinecone_api_key": os.getenv("PINECONE_API_KEY"),
+        "environment": ENVIRONMENT,
+    }
+)
 
 def save_post(
     text,
