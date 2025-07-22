@@ -1,3 +1,6 @@
+# General Requirements
+argparse
+#Stable Diffusion Model Requirements
 diffusers
 transformers
 accelerate
