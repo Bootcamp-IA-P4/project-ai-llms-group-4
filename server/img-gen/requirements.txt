@@ -1,0 +1,8 @@
+# General Requirements
+argparse
+dotenv
+#Stable Diffusion Model Requirements
+diffusers
+transformers
+accelerate
+safetensors
