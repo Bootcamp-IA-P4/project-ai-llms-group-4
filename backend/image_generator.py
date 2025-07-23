@@ -15,6 +15,7 @@ headers = {
     "Accept": "image/*", 
 }
 
+<<<<<<< HEAD:app/image_generator.py
 def generate_image_url(topic, platform=None, tone=None, audience=None, size="1024x1024", style="photographic"):
     """
     Generate an image based on topic and optional parameters.
@@ -54,8 +55,14 @@ def generate_image_url(topic, platform=None, tone=None, audience=None, size="102
     style_desc = style_descriptions.get(style, "photorealistic")
     prompt = f"{prompt}, {style_desc}"
     
+=======
+def generate_image_url(text):
+    """
+    Genera una imagen usando el texto generado por el LLM.
+    """
+>>>>>>> origin/dev:backend/image_generator.py
     files = {
-        'prompt': (None, prompt),
+        'prompt': (None, text),  # Aquí el texto del post generado
         'output_format': (None, 'png'),
         'dimensions': (None, size),
     }
@@ -63,7 +70,6 @@ def generate_image_url(topic, platform=None, tone=None, audience=None, size="102
     response = requests.post(API_URL, headers=headers, files=files)
 
     if response.status_code == 200:
-        # Convertir contenido binario a base64
         base64_image = base64.b64encode(response.content).decode("utf-8")
         return f"data:image/png;base64,{base64_image}"
     else:
