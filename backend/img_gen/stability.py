@@ -73,7 +73,7 @@ if __name__ == "__main__":
         print("Generando imagen con el prompt:", args.img)
         main(args.img,args.path)
     else:
-        print("Generando imagen con el prompt por defecto:", default_image_prompt.to_prompt())
+        print("Generating image with default prompt:", default_image_prompt.to_prompt())
         main()
   
 
