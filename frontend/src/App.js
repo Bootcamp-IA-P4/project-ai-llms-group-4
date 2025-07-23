@@ -4,6 +4,7 @@ import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import ContentForm from './components/Form/ContentForm';
 import ContentResult from './components/Form/ContentResult';
+import FloatingBot from './components/FloatingBot/FloatingBot';
 import { generateContent } from './api';
 import './styles/App.css';
 
@@ -13,11 +14,18 @@ function App() {
   const [imageUrl, setImageUrl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showBot, setShowBot] = useState(() => {
+    const saved = localStorage.getItem('magicpost-bot-visible');
+    return saved !== null ? JSON.parse(saved) : true;
+  });
 
   const mainContentRef = React.useRef(null);
-  
-  const scrollToContent = () => {
+    const scrollToContent = () => {
     mainContentRef.current?.focus();
+  };
+
+  const handleRestoreBot = () => {
+    setShowBot(true);
   };
   
   // Add skip link for accessibility
@@ -68,10 +76,10 @@ function App() {
             )}
           </div>
         </div>
-      </main>
-      
+      </main>      
       <Tooltip id="tooltip-component" />
-      <Footer />
+      <Footer onRestoreBot={handleRestoreBot} />
+      {showBot && <FloatingBot onClose={() => setShowBot(false)} />}
     </div>
   );
 }

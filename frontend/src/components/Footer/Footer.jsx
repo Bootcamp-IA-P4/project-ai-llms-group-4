@@ -1,8 +1,15 @@
 import React from 'react';
 import './Footer.css';
 
-const Footer = () => {
+const Footer = ({ onRestoreBot }) => {
   const currentYear = new Date().getFullYear();
+  
+  const handleRestoreBot = () => {
+    if (onRestoreBot) {
+      onRestoreBot();
+      localStorage.setItem('magicpost-bot-visible', 'true');
+    }
+  };
 
   return (
     <footer className="app-footer">
@@ -46,9 +53,13 @@ const Footer = () => {
             </ul>
           </div>
         </div>
-        
-        <div className="footer-bottom">
+          <div className="footer-bottom">
           <p>© {currentYear} Generador de Contenido IA. Todos los derechos reservados.</p>
+          {localStorage.getItem('magicpost-bot-visible') === 'false' && (
+            <button className="restore-bot-btn" onClick={handleRestoreBot} title="Restaurar asistente bot">
+              🤖 Restaurar Bot
+            </button>
+          )}
         </div>
       </div>
     </footer>
