@@ -1,5 +1,5 @@
 from .models import ImagePrompt
-from .utils import save_image
+from .utils import image_output
 from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
@@ -47,16 +47,14 @@ def load():
 
 
 # Generates an image based on the provided ImagePrompt and the Stable Diffusion model.
-def main(img:ImagePrompt=default_image_prompt, output_path=output_path):
+def main(img = default_image_prompt, output_path=output_path):
     # Load the Stable Diffusion model
     load()
     # Generate the image based on the provided ImagePrompt
-    print("Generating prompt from ImagePrompt...")
     prompt = img.to_prompt() if isinstance(img, ImagePrompt) else "Generate an image for this text " + img
-    print(prompt)
-    print("Generating image...")
     image = pipe(prompt).images[0]
-    save_image(image,output_path)
+
+    return image_output(image,output_path)
 
     
 

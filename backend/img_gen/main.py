@@ -26,10 +26,15 @@ default_image_prompt = ImagePrompt(
 )
 
 def generate_post_image(prompt, model, output_path: str = output_path):
+    prompt = detect_and_translate(prompt)
     if model == "local":
+            print("Generating image using local model...") # Debugging statement
             return diffusers_prompt(prompt, output_path) # Generate image using local model
     elif model == "stability":
-            return stability_prompt(prompt, output_path) # Generate image using Stability AI model API
+            print("Generating image using Stability AI model...") # Debugging statement
+            resultado = stability_prompt(prompt, output_path) # Generate image using Stability AI model API
+            print(resultado)
+            return resultado
     else:
         raise ValueError(f"Invalid model: {model}. Choose 'local' or 'stability'.")
 
@@ -45,7 +50,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--img_prompt",
-        type=ImagePrompt,
+        type=str,
         default=default_image_prompt,
         help="User ImagePrompt for image generation (default: default_image_prompt)",
     )

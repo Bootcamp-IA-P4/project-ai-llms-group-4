@@ -1,5 +1,5 @@
 from .models import ImagePrompt
-from .utils import save_image
+from .utils import image_output
 import argparse
 import requests
 from dotenv import load_dotenv  
@@ -49,12 +49,13 @@ def generate_image(prompt: str, output_path: str):
     # Get the image in base64 format
     data = response.json()
     b64_image = data["artifacts"][0]["base64"]
-    save_image(b64_image, output_path)
+    return image_output(b64_image, output_path)
+  
     
 
-def main(img: ImagePrompt = default_image_prompt,output_path: str = "server/image-gen/output/output.png"):
+def main(img = default_image_prompt, output_path = "server/image-gen/output/output.png"):
     prompt = img.to_prompt() if isinstance(img, ImagePrompt) else "Generate an image for this text " + img
-    generate_image(prompt,output_path) 
+    return generate_image(prompt,output_path) 
 
 # Ejemplo de uso
 if __name__ == "__main__":
