@@ -119,6 +119,13 @@
   outline-offset: 2px;
 }
 
+.nav-link.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: #ffffff;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
+}
+
 .contact-btn {
   background: var(--gradient-rainbow);
   color: #0a2d75 !important;
