@@ -6,10 +6,10 @@ from langdetect import detect
 from deep_translator import GoogleTranslator
 
 def Image2Base64(image: Image.Image) -> str:
+    """
+    Convierte una imagen PIL a una cadena base64.
+    """
     try:
-        """
-        Convierte una imagen PIL a una cadena base64.
-        """
         buffered = io.BytesIO()
         image.save(buffered, format="PNG")
         return base64.b64encode(buffered.getvalue()).decode("utf-8")
