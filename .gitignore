@@ -205,9 +205,19 @@ yarn-error.log
 # Local Netlify folder
 .netlify
 
+<<<<<<< HEAD
 # React / Frontend
 /frontend/build/
 /frontend/.env.local
 /frontend/.env.development.local
 /frontend/.env.test.local
 /frontend/.env.production.local
+=======
+# Image files
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.tiff
+>>>>>>> origin/dev
