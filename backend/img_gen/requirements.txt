@@ -1,7 +1,7 @@
 # General Requirements
-argparse
 dotenv
 #Stable Diffusion Model Requirements
+diffusers
 diffusers
 transformers
 accelerate
