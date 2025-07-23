@@ -33,7 +33,7 @@ def image_output(image, filepath=None):
         if isinstance(image, str):
             return f"data:image/png;base64,{image}" 
         else:
-            return f"data:image/png;base64,{Image2Base64(image).decode('utf-8')}" 
+            return f"data:image/png;base64,{Image2Base64(image)}" 
         
     elif filepath is not None and filepath.strip() != "": # Save file to outputpah
         save_image(image, filepath)
