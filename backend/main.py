@@ -34,8 +34,8 @@ def read_root():
 
 @app.post("/generate")
 def generate_content(data: ContentRequest):
-    # Generar el contenido textual
-    result_text = generate_text_with_context(
+    # Obtener solo el texto generado (ignoramos el prompt)
+    text, _ = generate_text_with_context(
         topic=data.topic,
         platform=data.platform,
         company=data.company,
@@ -45,17 +45,12 @@ def generate_content(data: ContentRequest):
         audience=data.audience
     )
 
-    # Generar la imagen solo si se marca como True
     image_url = None
     if data.generate_image:
-        image_url = generate_image_url(
-            topic=data.topic,
-            platform=data.platform,
-            tone=data.tone,
-            audience=data.audience
-        )
+        # Solo pasamos el texto generado
+        image_url = generate_image_url(text)
 
     return {
-        "text": result_text,
+        "text": text,
         "image": image_url
     }
