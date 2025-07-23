@@ -5,8 +5,20 @@
   padding: 18px 0;
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1000;
   border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.app-header.footer-visible {
+  position: fixed;
+  top: auto;
+  bottom: 0;
+  width: 100%;
+  border-bottom: none;
+  border-top: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 -4px 25px rgba(10, 45, 117, 0.3);
+  z-index: 1001; /* Mayor que el footer */
 }
 
 .header-container {
@@ -126,6 +138,30 @@
   text-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
 }
 
+/* Special styling for MP PRO link */
+.nav-link[href="/pro"] {
+  color: rgba(255, 255, 255, 0.9);
+  padding: 10px 18px;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.nav-link[href="/pro"]:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.nav-link[href="/pro"].active {
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: #ffffff;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
+}
+
 .contact-btn {
   background: var(--gradient-rainbow);
   color: #0a2d75 !important;
@@ -174,12 +210,140 @@
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.menu-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.menu-toggle:focus {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* Hamburger icon */
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  width: 24px;
+  height: 18px;
+  position: relative;
+}
+
+.hamburger span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 1px;
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+.hamburger span:nth-child(1) {
+  transform: translateY(0);
+}
+
+.hamburger span:nth-child(2) {
+  transform: translateY(6px);
+}
+
+.hamburger span:nth-child(3) {
+  transform: translateY(12px);
+}
+
+/* Hamburger animation when active */
+.hamburger.active span:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+  transform: translateY(4px) rotate(-45deg);
+}
+
+/* Prevent scrolling when menu is open */
+body.menu-open {
+  overflow: hidden;
+}
+
+/* Keyframe animations for menu items */
+@keyframes slideInDown {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 6px 20px rgba(112, 211, 241, 0.3);
+  }
+  50% {
+    box-shadow: 0 6px 25px rgba(112, 211, 241, 0.5);
+  }
+}
+
+/* Mobile overlay to darken background when menu is open - ONLY MOBILE */
+@media (max-width: 768px) {
+  .app-header::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 40;
+    pointer-events: none;
+  }
+  
+  .app-header.menu-active::after {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+}
+
+/* Ensure no overlay on desktop */
+@media (min-width: 769px) {
+  .app-header::after {
+    display: none;
+  }
+  
+  .app-header.menu-active::after {
+    display: none;
+  }
 }
 
 /* Responsive styles */
 @media (max-width: 992px) {
   .logo-container h1 {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
   }
   
   .main-nav ul {
@@ -189,46 +353,316 @@
 
 @media (max-width: 768px) {
   .header-container {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-  }
-  
-  .main-nav {
-    width: 100%;
-  }
-  
-  .main-nav ul {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-}
-
-@media (max-width: 576px) {
-  .menu-toggle {
-    display: block;
-  }
-  
-  .main-nav {
-    display: none;
-  }
-  
-  .main-nav.active {
-    display: block;
-  }
-  
-  .main-nav ul {
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-  }
-  
-  .header-container {
-    flex-direction: row;
-    justify-content: space-between;
+    position: relative;
   }
   
   .logo-container h1 {
+    font-size: 1.3rem;
+  }
+  
+  .menu-toggle {
+    display: block;
+  }  .main-nav {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 280px;
+    height: 100vh;
+    background: linear-gradient(180deg, #0a2d75 0%, #1a3d85 100%);
+    border-left: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: -4px 0 25px rgba(10, 45, 117, 0.4);
+    transform: translateX(100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 50;
+    backdrop-filter: blur(15px);
+    overflow-y: auto;
+  }
+  
+  .main-nav.active {
+    transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
+    right: 0;
+  }  .main-nav ul {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 20px 0 24px 0;
+    height: 100%;
+    margin: 0;
+  }  .main-nav li {
+    width: 100%;
+    text-align: left;
+    transform: translateX(30px);
+    opacity: 0;
+    animation: none;
+  }
+  
+  .main-nav.active li {
+    animation: slideInRight 0.4s ease forwards;
+  }
+  
+  .main-nav.active li:nth-child(1) { animation-delay: 0.1s; }
+  .main-nav.active li:nth-child(2) { animation-delay: 0.15s; }
+  .main-nav.active li:nth-child(3) { animation-delay: 0.2s; }
+  .main-nav.active li:nth-child(4) { animation-delay: 0.25s; }  .nav-link {
+    display: block;
+    padding: 16px 24px;
+    width: calc(100% - 32px);
+    margin: 8px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    text-align: left;
+  }
+  
+  .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+  }
+    .nav-link.active {
+    background: linear-gradient(135deg, rgba(112, 211, 241, 0.2), rgba(194, 198, 253, 0.2));
+    border: 1px solid rgba(112, 211, 241, 0.4);
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
+  }
+    /* MP PRO special styling in mobile menu */
+  .nav-link[href="/pro"] {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 600 !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+  }
+  
+  .nav-link[href="/pro"]:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+    transform: translateY(-2px) !important;
+  }
+  
+  .nav-link[href="/pro"].active {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    color: #ffffff !important;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.7) !important;
+  }
+    .contact-btn {
+    background: linear-gradient(135deg, #70d3f1, #c2c6fd, #de99ff) !important;
+    color: #0a2d75 !important;
+    border-radius: 16px !important;
+    margin: 12px 16px !important;
+    padding: 16px 24px !important;
+    font-weight: 700 !important;
+    font-size: 0.95rem !important;
+    box-shadow: 0 6px 20px rgba(112, 211, 241, 0.3) !important;
+    border: none !important;
+    text-shadow: none !important;
+    animation: pulseGlow 2s ease-in-out infinite;
+  }
+  
+  .contact-btn:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 8px 25px rgba(112, 211, 241, 0.4) !important;
+    background: linear-gradient(135deg, #5bc4e8, #b3b8f7, #d685fc) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-header {
+    padding: 12px 0;
+  }
+  
+  .logo-container h1 {
+    font-size: 1.1rem;
+  }
+  
+  .main-nav {
+    width: 260px; /* Slightly smaller on small screens */
+  }
+  
+  .main-nav ul {
+    padding: 16px 0 20px 0;
+  }
+  
+  .nav-link {
+    padding: 12px 16px;
+    font-size: 0.9rem;
+    margin: 6px 12px;
+    border-radius: 10px;
+  }
+  
+  .contact-btn {
+    padding: 14px 20px !important;
+    margin: 10px 12px !important;
+    border-radius: 14px !important;
+    font-size: 0.9rem !important;
+  }
+}
+
+/* Responsive behavior for footer-visible state */
+@media (max-width: 768px) {
+  .app-header.footer-visible {
+    padding: 12px 0;
+  }
+  
+  .app-header.footer-visible .main-nav.active {
+    bottom: 100%;
+    top: auto;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    border-top: none;
+    box-shadow: 0 -4px 25px rgba(10, 45, 117, 0.3);
+  }
+}
+
+@media (max-width: 480px) {
+  .app-header.footer-visible {
+    padding: 10px 0;
+  }
+  
+  .app-header.footer-visible .logo-container h1 {
+    font-size: 1rem;
+  }
+}
+
+/* Navigation header for sidebar menu - ONLY MOBILE */
+@media (max-width: 768px) {
+  .nav-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 8px;
+  }
+  
+  .nav-header h3 {
+    margin: 0;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+  
+  .nav-close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+  }
+  
+  .nav-close-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
+  }
+}
+
+/* Hide nav-header on desktop */
+@media (min-width: 769px) {
+  .nav-header {
     display: none;
+  }
+}
+
+/* Ensure desktop menu remains horizontal and normal */
+@media (min-width: 769px) {
+  .main-nav {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transition: none !important;
+    z-index: auto !important;
+    backdrop-filter: none !important;
+    overflow-y: visible !important;
+    padding: 0 !important;
+    top: auto !important;
+    right: auto !important;
+  }
+  
+  .main-nav.active {
+    transform: none !important;
+    right: auto !important;
+  }
+  
+  .main-nav ul {
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 24px !important;
+    padding: 0 !important;
+    height: auto !important;
+    margin: 0 !important;
+  }
+  
+  .main-nav li {
+    width: auto !important;
+    text-align: left !important;
+    transform: none !important;
+    opacity: 1 !important;
+    animation: none !important;
+  }
+  
+  .nav-link {
+    display: inline-block !important;
+    padding: 8px 16px !important;
+    width: auto !important;
+    margin: 0 !important;
+    border-radius: var(--border-radius) !important;
+    border: 1px solid transparent !important;
+    transition: all 0.3s ease !important;
+    font-size: inherit !important;
+    background: none !important;
+    backdrop-filter: none !important;
+    text-align: left !important;
+  }
+  
+  /* Restore original MP PRO styling for desktop */
+  .nav-link[href="/pro"] {
+    color: rgba(255, 255, 255, 0.9) !important;
+    padding: 10px 18px !important;
+    font-weight: 600 !important;
+    border: 1px solid transparent !important;
+    background: none !important;
+  }
+  
+  .nav-link[href="/pro"]:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+    transform: translateY(-1px) !important;
+  }
+  
+  /* Restore contact button for desktop */
+  .contact-btn {
+    background: var(--gradient-rainbow) !important;
+    color: #0a2d75 !important;
+    padding: 10px 18px !important;
+    border-radius: var(--border-radius) !important;
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.3), 0 0 15px rgba(222, 153, 255, 0.5) !important;
+    font-weight: 700 !important;
+    border: none !important;
+    margin: 0 !important;
+    font-size: inherit !important;
+    text-shadow: none !important;
+    animation: none !important;
   }
 }

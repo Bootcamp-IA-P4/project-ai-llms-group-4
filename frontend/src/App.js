@@ -6,6 +6,7 @@ import ContentForm from './components/Form/ContentForm';
 import ContentResult from './components/Form/ContentResult';
 import FloatingBot from './components/FloatingBot/FloatingBot';
 import About from './components/About/About';
+import MPPro from './components/MPPro/MPPro';
 import { generateContent } from './api';
 import './styles/App.css';
 
@@ -61,10 +62,19 @@ function App() {
       </a>
       <Header currentView={currentView} onNavigate={handleNavigation} />
       
-      <main className="main-content" id="main-content" ref={mainContentRef} tabIndex="-1">
-        {currentView === 'home' ? (
+      <main className="main-content" id="main-content" ref={mainContentRef} tabIndex="-1">        {currentView === 'home' ? (
           <div className="container">
             <div className="content-wrapper">
+              <header className="main-header">
+                <h1 className="main-title" id="main-title" data-text="MAGIC POST GENERATOR">
+                  <span className="visually-hidden">MAGIC POST GENERATOR - Generador de Contenidos con IA</span>
+                  <span aria-hidden="true">MAGIC POST GENERATOR</span>
+                </h1>
+                <p className="main-description" id="main-description">
+                  Configura los parámetros para generar contenido optimizado para tu audiencia y plataforma
+                </p>
+              </header>
+              
               <section className="form-section" aria-label="Formulario de generación de contenido">
                 <ContentForm onSubmit={handleFormSubmit} loading={loading} />
               </section>
@@ -86,9 +96,10 @@ function App() {
                 </section>
               )}
             </div>
-          </div>
-        ) : currentView === 'about' ? (
+          </div>        ) : currentView === 'about' ? (
           <About />
+        ) : currentView === 'mp-pro' ? (
+          <MPPro />
         ) : null}
       </main>      
       <Tooltip id="tooltip-component" />

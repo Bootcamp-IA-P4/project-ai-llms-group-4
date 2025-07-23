@@ -6,10 +6,20 @@ const FloatingBot = ({ onClose }) => {
   const [isVisible, setIsVisible] = useState(() => {
     const saved = localStorage.getItem('magicpost-bot-visible');
     return saved !== null ? JSON.parse(saved) : true;
-  });
-  const [position, setPosition] = useState(() => {
+  });  const [position, setPosition] = useState(() => {
     const saved = localStorage.getItem('magicpost-bot-position');
-    return saved ? JSON.parse(saved) : { x: 50, y: 50 };
+    if (saved) {
+      return JSON.parse(saved);
+    }
+    // Posición por defecto optimizada para móvil
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile) {
+      return { 
+        x: window.innerWidth - 110, // 110px desde el borde derecho (espacio para el bot de 90px + margen)
+        y: window.innerHeight - 180 // 180px desde abajo para evitar interfaz
+      };
+    }
+    return { x: 50, y: 50 };
   });const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });  const [showMessage, setShowMessage] = useState(false);
   const [newMessage, setNewMessage] = useState(false);
@@ -18,13 +28,12 @@ const FloatingBot = ({ onClose }) => {
   const messages = [
     "¡Hola! 🤖",
     "¿Necesitas ayuda? 💡",
-    "¡Crea posts increíbles! ✨",
+    "¡Crea posts increíbles!",
     "¿Listo para crear? 🚀",
     "Estoy aquí 😊"
   ];
 
-  const [currentMessage, setCurrentMessage] = useState(messages[0]);
-  // Manejar el scroll para que el bot se mueva suavemente
+  const [currentMessage, setCurrentMessage] = useState(messages[0]);  // Manejar el scroll para que el bot se mueva suavemente
   useEffect(() => {
     const handleScroll = () => {
       if (!isDragging) {
@@ -39,6 +48,20 @@ const FloatingBot = ({ onClose }) => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [isDragging]);
+
+  // Manejar cambios de tamaño de ventana para mantener el bot visible
+  useEffect(() => {
+    const handleResize = () => {
+      const botSize = window.innerWidth <= 480 ? 90 : (window.innerWidth <= 768 ? 100 : 120);
+      setPosition(prev => ({
+        x: Math.max(0, Math.min(window.innerWidth - botSize, prev.x)),
+        y: Math.max(0, Math.min(window.innerHeight - botSize, prev.y))
+      }));
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
  
   useEffect(() => {
     const interval = setInterval(() => {
@@ -69,11 +92,36 @@ const FloatingBot = ({ onClose }) => {
     });
   };
 
+  // Soporte para touch en móviles
+  const handleTouchStart = (e) => {
+    e.preventDefault();
+    setClickStartTime(Date.now());
+    setIsDragging(true);
+    const touch = e.touches[0];
+    setDragStart({
+      x: touch.clientX - position.x,
+      y: touch.clientY - position.y
+    });
+  };
+
   const handleMouseMove = (e) => {
     if (isDragging) {
+      const botSize = window.innerWidth <= 480 ? 90 : (window.innerWidth <= 768 ? 100 : 120);
       setPosition({
-        x: Math.max(0, Math.min(window.innerWidth - 100, e.clientX - dragStart.x)),
-        y: Math.max(0, Math.min(window.innerHeight - 100, e.clientY - dragStart.y))
+        x: Math.max(0, Math.min(window.innerWidth - botSize, e.clientX - dragStart.x)),
+        y: Math.max(0, Math.min(window.innerHeight - botSize, e.clientY - dragStart.y))
+      });
+    }
+  };
+
+  const handleTouchMove = (e) => {
+    if (isDragging) {
+      e.preventDefault();
+      const touch = e.touches[0];
+      const botSize = window.innerWidth <= 480 ? 90 : (window.innerWidth <= 768 ? 100 : 120);
+      setPosition({
+        x: Math.max(0, Math.min(window.innerWidth - botSize, touch.clientX - dragStart.x)),
+        y: Math.max(0, Math.min(window.innerHeight - botSize, touch.clientY - dragStart.y))
       });
     }
   };
@@ -97,15 +145,38 @@ const FloatingBot = ({ onClose }) => {
     setIsDragging(false);
   };
 
+  const handleTouchEnd = () => {
+    const clickDuration = Date.now() - clickStartTime;
+    // Si fue un toque rápido (menos de 200ms) y no se movió mucho, mostrar mensaje especial
+    if (clickDuration < 200 && !isDragging) {
+      const helpMessages = [
+        "💡 Tip: Múltiples redes sociales",
+        "🎨 Consejo: Activa imágenes",
+        "🌍 Recuerda: Cambia idioma",
+        "🚀 Truco: Varía el tono"
+      ];
+      const randomTip = helpMessages[Math.floor(Math.random() * helpMessages.length)];
+      setCurrentMessage(randomTip);
+      setShowMessage(true);
+      setTimeout(() => setShowMessage(false), 5000);
+    }
+    
+    setIsDragging(false);
+  };
+
   useEffect(() => {
     if (isDragging) {
       window.addEventListener('mousemove', handleMouseMove);
       window.addEventListener('mouseup', handleMouseUp);
+      window.addEventListener('touchmove', handleTouchMove, { passive: false });
+      window.addEventListener('touchend', handleTouchEnd);
     }
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
     };
   }, [isDragging, dragStart]);  const closeBotHandler = () => {
     setIsVisible(false);
@@ -128,6 +199,7 @@ const FloatingBot = ({ onClose }) => {
         top: `${position.y}px`
       }}
       onMouseDown={handleMouseDown}
+      onTouchStart={handleTouchStart}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >

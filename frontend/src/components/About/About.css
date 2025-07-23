@@ -20,12 +20,31 @@
   font-size: 3.5rem;
   font-weight: 800;
   margin-bottom: 30px;
-  background: #0a2d75;
+  background: var(--gradient-rainbow);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
   letter-spacing: 2px;
-  text-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
+  text-shadow: 2px 2px 4px rgba(10, 45, 117, 0.3);
+  -webkit-text-stroke: 1px rgba(10, 45, 117, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.about-title:hover {
+  transform: scale(1.02);
+  text-shadow: 3px 3px 6px rgba(10, 45, 117, 0.4);
+}
+
+/* Create enhanced contrast version for users with reduced contrast preferences */
+@media (prefers-contrast: more) {
+  .about-title {
+    background: #0a2d75;
+    background-clip: unset;
+    -webkit-background-clip: unset;
+    color: #0a2d75;
+    text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8);
+    -webkit-text-stroke: none;
+  }
 }
 
 .about-description {

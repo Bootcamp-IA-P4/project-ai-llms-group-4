@@ -125,6 +125,7 @@
   .floating-bot {
     width: 100px;
     height: 100px;
+    z-index: 1001; /* Mayor z-index para móvil */
   }
   
   .bot-image {
@@ -135,7 +136,7 @@
   .close-btn {
     width: 22px;
     height: 22px;
-    font-size: 16px;
+    font-size: 14px;
     top: -3px;
     right: -3px;
   }
@@ -156,11 +157,20 @@
   .floating-bot {
     width: 90px;
     height: 90px;
+    z-index: 1001; /* Asegurar visibilidad en móviles pequeños */
   }
   
   .bot-image {
     width: 65px;
     height: 65px;
+  }
+  
+  .close-btn {
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    top: -2px;
+    right: -2px;
   }
   
   .bot-tooltip {
@@ -169,6 +179,11 @@
     max-width: 150px;
     white-space: normal;
     text-align: center;
+    top: -45px;
+  }
+  
+  .bot-tooltip::after {
+    border-width: 5px;
   }
 }
 

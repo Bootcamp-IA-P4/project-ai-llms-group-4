@@ -98,6 +98,7 @@
   align-items: center;
   padding-top: 20px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
 }
 
 .footer-bottom p {
@@ -145,19 +146,10 @@
     grid-template-columns: 1fr;
     gap: 30px;
   }
-    .footer-bottom {
-    flex-direction: column;
-    gap: 16px;
-    text-align: center;
-  }
 }
 
 /* Botón para restaurar bot */
 .restore-bot-btn {
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
   background: linear-gradient(135deg, #70d3f1 0%, #c2c6fd 100%);
   color: white;
   border: none;
@@ -169,21 +161,24 @@
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(112, 211, 241, 0.4);
   border: 2px solid rgba(255, 255, 255, 0.3);
+  margin-left: 20px;
+  white-space: nowrap;
 }
 
 .restore-bot-btn:hover {
-  transform: translateY(-50%) scale(1.05);
+  transform: scale(1.05);
   box-shadow: 0 6px 20px rgba(112, 211, 241, 0.6);
 }
 
 @media (max-width: 768px) {
-  .restore-bot-btn {
-    position: static;
-    transform: none;
-    margin-top: 1rem;
+  .footer-bottom {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
   }
   
-  .restore-bot-btn:hover {
-    transform: scale(1.05);
+  .restore-bot-btn {
+    margin-left: 0;
+    margin-top: 10px;
   }
 }

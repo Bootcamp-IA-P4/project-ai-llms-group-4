@@ -54,7 +54,6 @@ const ContentForm = ({ onSubmit, loading }) => {  const [formData, setFormData] 
     { name: 'LinkedIn', icon: linkedinIcon },
     { name: 'Blog', icon: blogIcon }
   ];
-
   return (
     <motion.div 
       className="form-container"
@@ -62,17 +61,12 @@ const ContentForm = ({ onSubmit, loading }) => {  const [formData, setFormData] 
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <h2 className="form-title" id="form-title" data-text="MAGIC POST Generator">MAGIC POST Generator</h2>
-      <p className="form-description" id="form-description">
-        Configura los parámetros para generar contenido optimizado para tu audiencia y plataforma
-      </p>
-      
       <form 
           onSubmit={handleSubmit} 
           className="content-form" 
-          aria-labelledby="form-title" 
-          aria-describedby="form-description"
-        >        <div className="form-grid" role="group">
+          aria-labelledby="main-title" 
+          aria-describedby="main-description"
+        ><div className="form-grid" role="group">
           {/* Primera fila: Tema y Marca/Empresa */}
           <div className="form-group">
             <label htmlFor="topic" className="form-label">
