@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import PlatformSelector from './PlatformSelector';
 import ButtonSelector from './ButtonSelector';
-import ModelSelector from './ModelSelector';
 import ImageToggle from './ImageToggle';
 import './ContentForm.css';
+
+// Importar iconos de plataformas
+import twitterIcon from '../../assets/images/twitter.svg';
+import linkedinIcon from '../../assets/images/linkedin.svg';
+import instagramIcon from '../../assets/images/instagram.svg';
+import blogIcon from '../../assets/images/blog.svg';
 
 const ContentForm = ({ onSubmit, loading }) => {  const [formData, setFormData] = useState({
     topic: 'Inteligencia Artificial',
@@ -43,6 +47,13 @@ const ContentForm = ({ onSubmit, loading }) => {  const [formData, setFormData] 
   // Nota: Estos arrays son manejados directamente por sus componentes respectivos
   const tones = ["Profesional", "Cercano", "Informativo", "Humorístico", "Técnico", "Inspirador", "Motivacional", "Formal", "Casual", "Persuasivo"];
   const languages = ["Español", "Inglés", "Francés", "Italiano", "Portugués", "Alemán"];
+  const models = ["meta-llama/llama-3-8b-instruct", "gpt-3.5-turbo", "claude-3-haiku", "mistral-7b-instruct"];
+  const platforms = [
+    { name: 'Twitter', icon: twitterIcon },
+    { name: 'Instagram', icon: instagramIcon },
+    { name: 'LinkedIn', icon: linkedinIcon },
+    { name: 'Blog', icon: blogIcon }
+  ];
 
   return (
     <motion.div 
@@ -118,17 +129,17 @@ const ContentForm = ({ onSubmit, loading }) => {  const [formData, setFormData] 
               onChange={handleChange}
               name="tone"
             />
-          </div>
-
-          {/* Tercera fila: Modelo y Audiencia */}
+          </div>          {/* Tercera fila: Modelo y Audiencia */}
           <div className="form-group">
             <label className="form-label">
               Modelo LLM
               <span className="tooltip-icon" data-tooltip-id="tooltip-component" data-tooltip-content="Modelo de lenguaje a utilizar para la generación de contenido">i</span>
             </label>
-            <ModelSelector 
+            <ButtonSelector 
+              options={models}
               selected={formData.model}
               onChange={handleChange}
+              name="model"
             />
           </div>
           <div className="form-group">
@@ -147,16 +158,17 @@ const ContentForm = ({ onSubmit, loading }) => {  const [formData, setFormData] 
             />
           </div>
         </div>
-        
-        {/* Plataforma en su propia fila */}
+          {/* Plataforma en su propia fila */}
         <div className="form-group platform-group">
           <label className="form-label">
             Plataforma
             <span className="tooltip-icon" data-tooltip-id="tooltip-component" data-tooltip-content="Selecciona la red social para la que se adaptará el contenido">i</span>
           </label>
-          <PlatformSelector 
-            selected={formData.platform} 
-            onChange={handleChange} 
+          <ButtonSelector 
+            options={platforms}
+            selected={formData.platform}
+            onChange={handleChange}
+            name="platform"
           />
         </div>
         
@@ -170,56 +182,8 @@ const ContentForm = ({ onSubmit, loading }) => {  const [formData, setFormData] 
                 checked: e.target.checked
               }
             })}
-            onModeChange={handleImageModeChange}
-          />
+            onModeChange={handleImageModeChange}          />
           
-          {formData.generateImage && formData.imageMode === 'manual' && (
-            <div className="manual-image-options">
-              <div className="image-option-group">
-                <label htmlFor="imageSize" className="image-option-label">Tamaño</label>
-                <select
-                  id="imageSize"
-                  name="imageSize"
-                  value={formData.imageSize}
-                  onChange={handleChange}
-                  className="image-option-input"
-                >
-                  <option value="1024x1024">1024x1024</option>
-                  <option value="1024x768">1024x768</option>
-                  <option value="768x1024">768x1024</option>
-                </select>
-              </div>
-              
-              <div className="image-option-group">
-                <label htmlFor="imageStyle" className="image-option-label">Estilo</label>
-                <select
-                  id="imageStyle"
-                  name="imageStyle"
-                  value={formData.imageStyle}
-                  onChange={handleChange}
-                  className="image-option-input"
-                >
-                  <option value="photographic">Fotográfico</option>
-                  <option value="illustration">Ilustración</option>
-                  <option value="3d">3D</option>
-                  <option value="cartoon">Cartoon</option>
-                </select>
-              </div>
-              
-              <div className="image-option-group" style={{ gridColumn: "1 / -1" }}>
-                <label htmlFor="imagePrompt" className="image-option-label">Prompt personalizado</label>
-                <input
-                  type="text"
-                  id="imagePrompt"
-                  name="imagePrompt"
-                  value={formData.imagePrompt}
-                  onChange={handleChange}
-                  placeholder="Describe la imagen que deseas generar"
-                  className="image-option-input"
-                />
-              </div>
-            </div>
-          )}
         </div>
         
         <button 
