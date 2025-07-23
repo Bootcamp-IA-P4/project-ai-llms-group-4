@@ -69,14 +69,17 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--img_prompt",
-        type=ImagePrompt,
-        default=default_image_prompt,
-        help="User ImagePrompt for image generation (default: default_image_prompt)",
+        type=str,
+        default=None,
+        help="User ImagePrompt as a string for image generation (default: environment-based default_image_prompt)",
     )
     args = parser.parse_args()
 
+    # Parse the image prompt string into an ImagePrompt object
+    img_prompt = parse_image_prompt(args.img_prompt) if args.img_prompt else default_image_prompt
+
     # Generate the image based on the provided prompt and save it
     print("Generating image with the following parameters:")
-    print(f"Image Prompt: {args.img_prompt}")
+    print(f"Image Prompt: {img_prompt}")
     print(f"Output Path: {args.path}")
-    main(args.img_prompt, args.path)
+    main(img_prompt, args.path)
