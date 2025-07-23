@@ -2,6 +2,8 @@ import os
 from PIL import Image
 import io
 import base64
+from langdetect import detect
+from deep_translator import GoogleTranslator
 
 def save_image(image, filepath):
     try:
@@ -34,3 +36,12 @@ def save_image(image, filepath):
     except Exception as e:
         print(f"Error saving image: {e}")
         exit(1)
+
+
+def detect_and_translate(text: str) -> str:
+    detected_lang = detect(text)
+    print(f"🌍 Detected language: {detected_lang}")
+    if detected_lang != "en":
+        translated = GoogleTranslator(source='auto', target='en').translate(text)
+        return translated
+    return text
