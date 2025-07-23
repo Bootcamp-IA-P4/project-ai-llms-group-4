@@ -1,0 +1,139 @@
+.platform-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.platform-option {
+  flex: 1 0 calc(25% - 15px);
+  min-width: 120px;
+  position: relative;
+}
+
+.platform-radio {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.platform-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border: 2px solid var(--gray-light);
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.platform-label:hover {
+  border-color: var(--secondary-color);
+  box-shadow: 0 4px 12px rgba(10, 45, 117, 0.1);
+  transform: translateY(-2px);
+  height: 100%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.platform-radio:checked + .platform-label {
+  border-color: var(--accent-color);
+  background-color: rgba(222, 153, 255, 0.05);
+  box-shadow: 0 4px 12px rgba(10, 45, 117, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.platform-icon {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 8px;
+}
+
+.platform-name {
+  font-weight: 500;
+  color: var(--text-color);
+  font-size: 0.9rem;
+}
+
+.platform-radio:checked + .platform-label .platform-name {
+  background: var(--gradient-rainbow);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  font-weight: 700;
+}
+
+.platform-radio:checked + .platform-label::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 12px;
+  height: 12px;
+  background: var(--gradient-rainbow);
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(54, 101, 199, 0.2);
+}
+
+.custom-checkbox {
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-left: 30px;
+  cursor: pointer;
+  font-weight: 500;
+  user-select: none;
+  margin: 10px 0;
+}
+
+.custom-checkbox input {
+  position: absolute;
+  opacity: 0;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: white;
+  border: 2px solid var(--gray-light);
+  border-radius: 4px;
+  transition: var(--transition);
+}
+
+.custom-checkbox:hover input ~ .checkmark {
+  border-color: var(--secondary-color);
+}
+
+.custom-checkbox input:checked ~ .checkmark {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.custom-checkbox input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.custom-checkbox .checkmark:after {
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}

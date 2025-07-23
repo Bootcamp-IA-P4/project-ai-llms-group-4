@@ -182,6 +182,14 @@ cython_debug/
 #  you could uncomment the following to ignore the enitre vscode folder
 # .vscode/
 
+# Node.js
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+.pnp/
+.pnp.js
+
 # Ruff stuff:
 .ruff_cache/
 
@@ -196,3 +204,10 @@ cython_debug/
 .cursorindexingignore
 # Local Netlify folder
 .netlify
+
+# React / Frontend
+/frontend/build/
+/frontend/.env.local
+/frontend/.env.development.local
+/frontend/.env.test.local
+/frontend/.env.production.local

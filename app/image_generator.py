@@ -15,10 +15,49 @@ headers = {
     "Accept": "image/*", 
 }
 
-def generate_image_url(prompt):
+def generate_image_url(topic, platform=None, tone=None, audience=None, size="1024x1024", style="photographic"):
+    """
+    Generate an image based on topic and optional parameters.
+    
+    Args:
+        topic (str): Main topic for the image
+        platform (str, optional): Social media platform 
+        tone (str, optional): Tone of the content
+        audience (str, optional): Target audience
+        size (str, optional): Image size (e.g., "1024x1024")
+        style (str, optional): Image style (e.g., "photographic", "illustration")
+        
+    Returns:
+        str: Base64 encoded image data URL or None if failed
+    """
+    # Create a more detailed prompt based on parameters
+    if platform or tone or audience:
+        detailed_prompt = f"{topic}"
+        if platform:
+            detailed_prompt += f" for {platform}"
+        if audience:
+            detailed_prompt += f", targeting {audience}"
+        if tone:
+            detailed_prompt += f", in a {tone.lower()} tone"
+        prompt = detailed_prompt
+    else:
+        prompt = topic
+    
+    # Add style description to the prompt
+    style_descriptions = {
+        "photographic": "photorealistic, high-quality photograph",
+        "illustration": "digital illustration, vibrant colors",
+        "3d": "3D rendered image, with depth and texture",
+        "cartoon": "cartoon style, vibrant and stylized"
+    }
+    
+    style_desc = style_descriptions.get(style, "photorealistic")
+    prompt = f"{prompt}, {style_desc}"
+    
     files = {
         'prompt': (None, prompt),
         'output_format': (None, 'png'),
+        'dimensions': (None, size),
     }
 
     response = requests.post(API_URL, headers=headers, files=files)
