@@ -18,7 +18,7 @@ This module is part of **Project AI LLMS Group 4** and provides an image generat
     ```
     Change to the `img-gen` branch and pull the latest changes:
     ```bash
-    git switch img-gen
+    git feature/switch img-gen
     git pull
     ```
 
