@@ -53,7 +53,7 @@ def generate_image(prompt: str, output_path: str):
     
 
 def main(img: ImagePrompt = default_image_prompt,output_path: str = "server/image-gen/output/output.png"):
-    prompt = img.to_prompt() if isinstance(img, ImagePrompt) else img
+    prompt = img.to_prompt() if isinstance(img, ImagePrompt) else "Generate an image for this text " + img
     generate_image(prompt,output_path) 
 
 # Ejemplo de uso
