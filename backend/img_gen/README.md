@@ -37,9 +37,9 @@ This module is part of **Project AI LLMS Group 4** and provides an image generat
 
 
 
-## Usage
+## Usage Stand-alone Script
 
-1. Start the server:
+1. Run the script:
     Both parameters are optional, if not provided, the default model will be used.
     
     ```bash
@@ -57,3 +57,18 @@ This module is part of **Project AI LLMS Group 4** and provides an image generat
 
 2. The file will be saved in the specified path.
 
+## Usage as a Service
+1. Import the generate_post_image function from the img_gen module:
+
+    ```python
+    from backend.img_gen.main import generate_post_image
+    generate_post_image(img_prompt, model, None)
+    ```
+2. Call the function with the desired parameters:
+    - `img_prompt`: An instance of `ImagePrompt` or a string prompt.
+    - `model`: Specify either 'local' for local generation with StableDiffusion or 'stability' for remote generation with StabilityAI.
+    - `None`: Leaving this paramter as None will return the generated images as a Base64 string, ready to render in a web application.
+
+    ```python
+    generate_post_image(img_prompt, model, None)
+    ```
