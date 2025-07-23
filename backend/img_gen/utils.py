@@ -18,10 +18,10 @@ def Image2Base64(image: Image.Image) -> str:
         exit(1)
 
 def Base642Image(base64_string: str) -> Image.Image:
+    """
+    Convierte una cadena base64 a una imagen PIL.
+    """
     try:
-        """
-        Convierte una cadena base64 a una imagen PIL.
-        """
         image_bytes = base64.b64decode(base64_string)
         return Image.open(io.BytesIO(image_bytes))
     except Exception as e:
