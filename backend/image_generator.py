@@ -15,16 +15,18 @@ headers = {
     "Accept": "image/*", 
 }
 
-def generate_image_url(prompt):
+def generate_image_url(text):
+    """
+    Genera una imagen usando el texto generado por el LLM.
+    """
     files = {
-        'prompt': (None, prompt),
+        'prompt': (None, text),  # Aquí el texto del post generado
         'output_format': (None, 'png'),
     }
 
     response = requests.post(API_URL, headers=headers, files=files)
 
     if response.status_code == 200:
-        # Convertir contenido binario a base64
         base64_image = base64.b64encode(response.content).decode("utf-8")
         return f"data:image/png;base64,{base64_image}"
     else:
