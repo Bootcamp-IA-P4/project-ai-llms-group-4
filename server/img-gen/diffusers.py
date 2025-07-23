@@ -52,7 +52,7 @@ def main(img:ImagePrompt=default_image_prompt, output_path=output_path):
     load()
     # Generate the image based on the provided ImagePrompt
     print("Generating prompt from ImagePrompt...")
-    prompt = img.to_prompt()
+    prompt = img.to_prompt() if isinstance(img, ImagePrompt) else img
     print(prompt)
     print("Generating image...")
     image = pipe(prompt).images[0]
