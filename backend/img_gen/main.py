@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 from .models import ImagePrompt
+from .utils import detect_and_translate
 from .diffusers import main as diffusers_prompt
 from .stability import main as stability_prompt
 
@@ -24,6 +25,14 @@ default_image_prompt = ImagePrompt(
     details=os.getenv("IMG_DETAILS"),
 )
 
+def generate_post_image(prompt, model, output_path: str = output_path):
+    if model == "local":
+            return diffusers_prompt(prompt, output_path) # Generate image using local model
+    elif model == "stability":
+            return stability_prompt(prompt, output_path) # Generate image using Stability AI model API
+    else:
+        raise ValueError(f"Invalid model: {model}. Choose 'local' or 'stability'.")
+
 
 if __name__ == "__main__":
     # Argument parser for command line arguments
@@ -31,7 +40,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--path",
         type=str,
-        default=output_path,
+        default="",
         help="Path to save the generated image (default: output/output.png)",
     )
     parser.add_argument(
@@ -49,7 +58,14 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    if args.model == "local":
-        diffusers_prompt(args.img_prompt, args.path) # Generate image using local model
-    elif args.model == "stability":
-        stability_prompt(args.img_prompt, args.path) # Generate image using Stability AI model API
+    # Detect language and translate if necessary
+    try:
+         prompt = detect_and_translate(args.img_prompt)  
+    except Exception as e:
+        print(f"Error detecting or translating prompt: {e}")
+
+    # Generate image using the specified model
+    try:
+        generate_post_image(prompt = prompt, model = args.model, output_path = args.path)
+    except Exception as e:
+        print(f"Error generating image: {e}")
