@@ -4,6 +4,8 @@ from typing import Optional
 from fastapi.middleware.cors import CORSMiddleware
 from .generate_with_rag import generate_text_with_context
 from .image_generator import generate_image_url
+from backend.financial.models import FinancialNewsRequest
+from backend.financial.financial_service import generate_financial_news
 
 
 app = FastAPI()
@@ -54,3 +56,12 @@ def generate_content(data: ContentRequest):
         "text": text,
         "image": image_url
     }
+
+# Endpoint para noticias financieras
+@app.post("/financial-news")
+def financial_news_endpoint(data: FinancialNewsRequest):
+    """
+    - Recibe: topic, company, language
+    - Devuelve: noticia financiera profesional con datos actualizados para la empresa específica
+    """
+    return generate_financial_news(data)
