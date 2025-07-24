@@ -34,9 +34,6 @@ def save_post(
     model=None,
     image_url=None
 ):
-    """
-    Guarda un post generado en Pinecone con todos los metadatos relevantes.
-    """
     metadata = {
         "prompt": prompt,
         "platform": platform,
@@ -47,9 +44,11 @@ def save_post(
         "model": model,
         "image_url": image_url
     }
-    # Convertimos el texto a embedding y lo guarda en el vector DB junto a los metadatos
-    vector_db.add_texts([text], metadatas=[metadata])
-    print("✅ Post guardado en Pinecone con metadatos:", metadata)
+    # Filtra claves con valor None (Pinecone no acepta None)
+    metadata_clean = {k: v for k, v in metadata.items() if v is not None}
+    vector_db.add_texts([text], metadatas=[metadata_clean])
+    print("✅ Post guardado en Pinecone con metadatos:", metadata_clean)
+
 
 def search_similar(query, top_k=3):
     """
