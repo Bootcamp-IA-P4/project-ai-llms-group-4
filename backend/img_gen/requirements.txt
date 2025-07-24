@@ -10,3 +10,6 @@ safetensors
 # Translation Requirements
 langdetect
 deep-translator
+
+# Unsplash Requirements
+keybert

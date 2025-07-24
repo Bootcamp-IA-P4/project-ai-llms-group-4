@@ -4,6 +4,8 @@ import io
 import base64
 from langdetect import detect
 from deep_translator import GoogleTranslator
+from keybert import KeyBERT
+import requests
 
 def Image2Base64(image: Image.Image) -> str:
     """
@@ -71,6 +73,7 @@ def save_image(image, filepath):
 
 
 def detect_and_translate(text: str) -> str:
+    text = text.replace("#", "").strip()  # Remove hashtags and extra spaces
     detected_lang = detect(text)
     print(f"🌍 Detected language: {detected_lang}")
     if detected_lang != "en":
@@ -78,3 +81,24 @@ def detect_and_translate(text: str) -> str:
         print(f"🌐 Translated text: {translated}")
         return translated
     return text
+
+
+def extract_keywords(text, top_n=5):
+    kw_model = KeyBERT()
+    keywords = kw_model.extract_keywords(text, top_n=top_n, stop_words='english')
+    print(f"🔑 Extracted keywords: {keywords}")
+    return [kw for kw, score in keywords]
+
+def download_image_from_url(url, output_path="output/output.jpg"):
+    img_data = requests.get(url).content
+    # with open(filename, "wb") as handler:
+    #     handler.write(img_data)
+    save_image(Image.open(io.BytesIO(img_data)), output_path)
+
+def get_image_base64_from_url(url):
+    response = requests.get(url)
+    if response.status_code == 200:
+        base64_image = base64.b64encode(response.content).decode('utf-8')
+        return f"data:image/png;base64,{base64_image}"
+    else:
+        raise Exception(f"Error al descargar imagen: {response.status_code}")
