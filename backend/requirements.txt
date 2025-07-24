@@ -35,3 +35,11 @@ deep-translator
 
 # Unsplash Requirements
 keybert
+
+# bbdd Requirements
+
+langchain
+langchain-pinecone
+langchain-huggingface
+pinecone-client
+python-dotenv
