@@ -57,7 +57,7 @@ def generate_content(data: ContentRequest):
         "image": image_url
     }
 
-# Endpoint para noticias financieras
+# Endpoint para crear noticias financieras
 @app.post("/financial-news")
 def financial_news_endpoint(data: FinancialNewsRequest):
     """
@@ -65,3 +65,14 @@ def financial_news_endpoint(data: FinancialNewsRequest):
     - Devuelve: noticia financiera profesional con datos actualizados para la empresa específica
     """
     return generate_financial_news(data)
+
+# Endpoint para obtener noticias financieras
+@app.get("/financial-news")
+def get_financial_news_endpoint(limit: int = 10):
+    """
+    - Obtiene: noticias financieras recientes con fechas en español
+    - Parámetros: limit (opcional, default=10)
+    - Devuelve: lista de noticias ordenadas por fecha
+    """
+    from backend.database.repository import get_recent_financial_news
+    return get_recent_financial_news(limit)

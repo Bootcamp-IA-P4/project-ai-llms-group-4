@@ -4,6 +4,7 @@ from typing import Dict, Any
 from .models import FinancialNewsRequest, FinancialNewsResponse
 from .financial_tools import get_stock_data, format_market_data_for_llm
 from .financial_chain import generate_financial_news as generate_news_with_llm
+import time
 
 def generate_financial_news(request: FinancialNewsRequest) -> Dict[str, Any]:
     """
@@ -79,6 +80,22 @@ def generate_financial_news(request: FinancialNewsRequest) -> Dict[str, Any]:
         print(f"   📏 Longitud de la noticia: {len(generated_news)} caracteres")
         print(f"   🏷️ Símbolo final: {symbol}")
         print(f"   🏢 Empresa: {company_name}")
+
+        # 5. Guardar en base de datos
+        start_time = time.time()  # Para calcular processing_time
+        processing_time_ms = int((time.time() - start_time) * 1000)
+
+        from backend.database.repository import save_financial_news_record
+        try:
+            save_financial_news_record(
+                request=request,
+                response_data=response_data, 
+                processing_time_ms=processing_time_ms,
+                success=True
+            )
+            print(f"💾 Guardado en base de datos exitoso")
+        except Exception as e:
+            print(f"⚠️ Error guardando en BD (no crítico): {e}")
         
         return response_data
         
