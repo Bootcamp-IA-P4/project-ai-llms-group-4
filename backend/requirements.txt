@@ -42,3 +42,5 @@ langchain
 langchain-pinecone
 langchain-huggingface
 python-dotenv
+pinecone
+
