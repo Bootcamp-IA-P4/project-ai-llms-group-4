@@ -1,0 +1,37 @@
+langchain-community
+langchain-core
+langchain-text-splitters
+langchain-groq
+langsmith
+fastapi
+uvicorn
+supabase
+
+# General Requirements
+argparse
+dotenv
+#Stable Diffusion Model Requirements
+diffusers
+transformers
+accelerate
+safetensors
+
+# Translation Requirements
+langdetect
+deep-translator
+
+# General Requirements
+dotenv
+#Stable Diffusion Model Requirements
+diffusers
+diffusers
+transformers
+accelerate
+safetensors
+
+# Translation Requirements
+langdetect
+deep-translator
+
+# Unsplash Requirements
+keybert
