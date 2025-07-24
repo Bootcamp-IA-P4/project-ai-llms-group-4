@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from backend.retriever import get_relevant_chunks
+from backend.vector_db.db_manager import search_similar 
 from backend.generator import generate_text
 
 # Cargar variables de entorno si se requieren
@@ -22,7 +22,7 @@ def generate_text_with_context(topic, platform, tone, company, language, model,i
     Genera contenido adaptado al contexto si la empresa es RuizTech.
     También incorpora información sobre la audiencia objetivo.
     """
-    company_clean = company.strip().lower()
+    company_clean = company.strip().lower() if company else ""
     is_ruiztech = company_clean == "ruiztech"
     language_instruction = get_language_instruction(language)
 
@@ -32,8 +32,13 @@ def generate_text_with_context(topic, platform, tone, company, language, model,i
     # Construcción del mensaje principal
     message_base = f"""Escribe un contenido para la plataforma {platform}, sobre el tema: "{topic}"."""
 
+    # Adaptación: si es RuizTech, recupera contexto semántico desde Pinecone
     if is_ruiztech:
-        context = get_relevant_chunks(topic)
+        # Recuperar fragmentos relevantes de la base vectorial (Pinecone)
+        context_results = search_similar(topic, top_k=3)
+        # Unimos los textos de los resultados (solo el contenido del documento)
+        context = "\n".join([doc.page_content for doc, score in context_results])
+
         full_prompt = f"""{language_instruction}
 
 Contexto relevante de la empresa RuizTech:
