@@ -1,10 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile, File
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 from fastapi.middleware.cors import CORSMiddleware
 from .generate_with_rag import generate_text_with_context
 from .image_generator import generate_image_url
-from backend.vector_db.db_manager import save_post, search_similar
+from backend.vector_db.db_manager import save_post, search_similar, ingest_document
 
 app = FastAPI()
 
@@ -101,3 +101,18 @@ def search_content(data: SearchRequest):
             similarity_score=round(score, 3)
         ))
     return {"results": output}
+
+@app.post("/upload_document")
+def upload_document(file: UploadFile = File(...)):
+    """
+    Sube e indexa un archivo de texto para consultas semánticas.
+    """
+    temp_path = f"tmp_{file.filename}"
+    with open(temp_path, "wb") as f:
+        f.write(file.file.read())
+
+    ingest_document(temp_path, source_name=file.filename)
+
+    # Limpia el archivo temporal
+    os.remove(temp_path)
+    return {"message": f"Documento {file.filename} indexado correctamente."}
