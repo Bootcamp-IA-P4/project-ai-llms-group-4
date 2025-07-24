@@ -41,5 +41,4 @@ keybert
 langchain
 langchain-pinecone
 langchain-huggingface
-pinecone-client
 python-dotenv
