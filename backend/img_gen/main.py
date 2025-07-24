@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 from .models import ImagePrompt
-from .utils import detect_and_translate
+from .utils import detect_and_translate, is_ollama_installed
 from .diffusers import main as diffusers_prompt
 from .stability import main as stability_prompt
 from .unsplash import main as unsplash_prompt
@@ -34,7 +34,11 @@ def generate_post_image(prompt, model, output_path: str = output_path):
             value = detect_and_translate(value) if value != "" and value is not None else ""
     if model == "local":
             print("Generating image using local model...") # Debugging statement
-            return diffusers_prompt(prompt, output_path) # Generate image using local model
+            if not is_ollama_installed():
+                raise EnvironmentError("Ollama is not installed. Please install Ollama to use the local model.")
+            else:
+                return diffusers_prompt(prompt, output_path)
+ # Generate image using local model
     elif model == "remote":
         try:
             print("Generating image using remote models...")    # Debugging statement
