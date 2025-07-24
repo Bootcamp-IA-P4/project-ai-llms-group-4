@@ -26,7 +26,11 @@ default_image_prompt = ImagePrompt(
 )
 
 def generate_post_image(prompt, model, output_path: str = output_path):
-    prompt = detect_and_translate(prompt)
+    if not isinstance(prompt, ImagePrompt):
+        prompt = detect_and_translate(prompt)
+    elif isinstance(prompt, ImagePrompt):
+         for key, value in prompt.__dict__.items():
+            value = detect_and_translate(value) if value != "" and value is not None else ""
     if model == "local":
             print("Generating image using local model...") # Debugging statement
             return diffusers_prompt(prompt, output_path) # Generate image using local model
