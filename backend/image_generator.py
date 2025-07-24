@@ -3,6 +3,7 @@ import requests
 from dotenv import load_dotenv
 from pathlib import Path
 import base64
+from backend.img_gen.main import generate_post_image
 
 # Cargar .env desde la raíz del proyecto
 load_dotenv(dotenv_path=Path(__file__).resolve().parents[1] / ".env")
@@ -15,20 +16,14 @@ headers = {
     "Accept": "image/*", 
 }
 
-def generate_image_url(text):
+def generate_image_url(text,model):
     """
     Genera una imagen usando el texto generado por el LLM.
     """
-    files = {
-        'prompt': (None, text),  # Aquí el texto del post generado
-        'output_format': (None, 'png'),
-    }
-
-    response = requests.post(API_URL, headers=headers, files=files)
-
-    if response.status_code == 200:
-        base64_image = base64.b64encode(response.content).decode("utf-8")
-        return f"data:image/png;base64,{base64_image}"
-    else:
-        print("❌ Error en API Stability:", response.status_code, response.text)
-        return None
+    try:
+        print("Calling generate_post_image def...")
+        return generate_post_image(text[:2000], model, None)       
+    except Exception as e:
+        print("Error retrieving image from model:", e)
+        return None 
+    

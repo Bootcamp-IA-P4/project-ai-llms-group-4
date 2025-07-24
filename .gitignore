@@ -8,8 +8,16 @@ mlartifacts/
 # C extensions
 *.so
 
+
 # Mac
 .DS_Store
+
+# Node.js dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
 
 # Distribution / packaging
 .Python
@@ -199,3 +207,11 @@ cython_debug/
 .cursorindexingignore
 # Local Netlify folder
 .netlify
+
+# Image files
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.tiff

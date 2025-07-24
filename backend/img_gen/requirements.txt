@@ -1,0 +1,15 @@
+# General Requirements
+dotenv
+#Stable Diffusion Model Requirements
+diffusers
+diffusers
+transformers
+accelerate
+safetensors
+
+# Translation Requirements
+langdetect
+deep-translator
+
+# Unsplash Requirements
+keybert
