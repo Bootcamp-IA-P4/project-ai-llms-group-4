@@ -3,9 +3,10 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 from .models import ImagePrompt
-from .utils import detect_and_translate
+from .utils import detect_and_translate, is_ollama_installed
 from .diffusers import main as diffusers_prompt
 from .stability import main as stability_prompt
+from .unsplash import main as unsplash_prompt
 
 pipe = None
 output_dir = "server/img-gen/output"
@@ -26,17 +27,33 @@ default_image_prompt = ImagePrompt(
 )
 
 def generate_post_image(prompt, model, output_path: str = output_path):
-    prompt = detect_and_translate(prompt)
+    if not isinstance(prompt, ImagePrompt):
+        prompt = detect_and_translate(prompt)
+    elif isinstance(prompt, ImagePrompt):
+         for key, value in prompt.__dict__.items():
+            value = detect_and_translate(value) if value != "" and value is not None else ""
     if model == "local":
             print("Generating image using local model...") # Debugging statement
-            return diffusers_prompt(prompt, output_path) # Generate image using local model
-    elif model == "stability":
+            if not is_ollama_installed():
+                raise EnvironmentError("Ollama is not installed. Please install Ollama to use the local model.")
+            else:
+                return diffusers_prompt(prompt, output_path)
+ # Generate image using local model
+    elif model == "remote":
+        try:
+            print("Generating image using remote models...")    # Debugging statement
             print("Generating image using Stability AI model...") # Debugging statement
-            resultado = stability_prompt(prompt, output_path) # Generate image using Stability AI model API
-            print(resultado)
-            return resultado
+            return stability_prompt(prompt, output_path) # Generate image using Stability AI model API
+        except Exception as e:
+            print(f"Error generating image using Stability AI model: {e}") # Debugging statement
+            try:
+                print("Generating image using Unsplash API...")
+                return unsplash_prompt(prompt, output_path)
+            except Exception as e:
+                print(f"Error generating image using Unsplash API: {e}") # Debugging statement
+            raise ValueError("Failed to generate image using both Stability AI and Unsplash APIs.")
     else:
-        raise ValueError(f"Invalid model: {model}. Choose 'local' or 'stability'.")
+        raise ValueError(f"Invalid model: {model}. Choose 'local' or 'remote'.")
 
 
 if __name__ == "__main__":

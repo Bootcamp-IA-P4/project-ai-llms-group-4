@@ -5,6 +5,8 @@ from typing import Optional, List, Dict, Any
 from fastapi.middleware.cors import CORSMiddleware
 from .generate_with_rag import generate_text_with_context
 from .image_generator import generate_image_url
+from backend.financial.models import FinancialNewsRequest
+from backend.financial.financial_service import generate_financial_news
 from backend.vector_db.db_manager import save_post, search_similar, ingest_document
 
 app = FastAPI()
@@ -26,6 +28,7 @@ class ContentRequest(BaseModel):
     tone: str
     language: str
     audience: Optional[str] = None
+    img_model: Optional[str] = "stability"
     model: str
     generate_image: bool = True
 
@@ -60,12 +63,14 @@ def generate_content(data: ContentRequest):
         tone=data.tone,
         language=data.language,
         model=data.model,
+        img_model=data.img_model,
         audience=data.audience
     )
     # 2️⃣ (Opcional) Generar imagen
     image_url = None
     if data.generate_image:
-        image_url = generate_image_url(text)
+        # Solo pasamos el texto generado
+        image_url = generate_image_url(text, data.img_model)
 
     # 3️⃣ Guardar en Pinecone (vectorial)
     save_post(
@@ -86,6 +91,25 @@ def generate_content(data: ContentRequest):
         "image": image_url
     }
 
+# Endpoint para crear noticias financieras
+@app.post("/financial-news")
+def financial_news_endpoint(data: FinancialNewsRequest):
+    """
+    - Recibe: topic, company, language
+    - Devuelve: noticia financiera profesional con datos actualizados para la empresa específica
+    """
+    return generate_financial_news(data)
+
+# Endpoint para obtener noticias financieras
+@app.get("/financial-news")
+def get_financial_news_endpoint(limit: int = 10):
+    """
+    - Obtiene: noticias financieras recientes con fechas en español
+    - Parámetros: limit (opcional, default=10)
+    - Devuelve: lista de noticias ordenadas por fecha
+    """
+    from backend.database.repository import get_recent_financial_news
+    return get_recent_financial_news(limit)
 
 @app.post("/search")
 def search_content(data: SearchRequest):

@@ -16,13 +16,14 @@ headers = {
     "Accept": "image/*", 
 }
 
-def generate_image_url(text):
+def generate_image_url(text,model):
     """
     Genera una imagen usando el texto generado por el LLM.
     """
     try:
         print("Calling generate_post_image def...")
-        return generate_post_image(text[:2000], "stability", None)       
+        return generate_post_image(text[:2000], model, None)       
     except Exception as e:
         print("Error retrieving image from model:", e)
         return None 
+    
