@@ -60,23 +60,23 @@ def search_similar(query, top_k=3):
     return results
 
 def ingest_document(file_path: str, source_name: str = None):
-        """
-        Dividimos el documento en fragmentos y los guardamos en Pinecone con metadatos.
-        - file_path: Ruta al archivo de texto a procesar
-        - source_name: Nombre identificador del documento (opcional)
-        """
+    """
+    Dividimos el documento en fragmentos y los guardamos en Pinecone con metadatos.
+    - file_path: Ruta al archivo de texto a procesar
+    - source_name: Nombre identificador del documento (opcional)
+    """
         # 1. Lee el documento
-        with open(file_path, "r", encoding="utf-8") as f:
+    with open(file_path, "r", encoding="utf-8") as f:
             content = f.read()
 
         # 2. Divide en chunks para mejorar la búsqueda semántica
-        splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
-        chunks = splitter.split_text(content)
+    splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
+    chunks = splitter.split_text(content)
 
         # 3. Sube cada fragmento a Pinecone con metadatos (incluye el nombre del documento original)
-        metadatas = [{"source": source_name or file_path}] * len(chunks)
-        vector_db.add_texts(chunks, metadatas=metadatas)
-        print(f"✅ Documento '{file_path}' indexado en Pinecone ({len(chunks)} fragmentos)")
+    metadatas = [{"source": source_name or file_path}] * len(chunks)
+    vector_db.add_texts(chunks, metadatas=metadatas)
+    print(f"✅ Documento '{file_path}' indexado en Pinecone ({len(chunks)} fragmentos)")
 
 # Este bloque permite usar el archivo como script para pruebas directas desde consola
 if __name__ == "__main__":
