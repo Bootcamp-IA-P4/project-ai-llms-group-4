@@ -20,7 +20,7 @@ default_image_prompt = ImagePrompt(
 )
 
 API_KEY = os.getenv("STABILITY_API_KEY")  # Ensure you have set this in your .env file
-if not API_KEY:
+if not API_KEY and __name__ == "__main__":
     raise ValueError("API_KEY not found. Please set STABILITY_API_KEY in your .env file.")
 ENGINE_ID = os.getenv("STABILITY_ENGINE")  
 API_HOST = os.getenv("STABILITY_HOST")

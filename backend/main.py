@@ -25,6 +25,7 @@ class ContentRequest(BaseModel):
     tone: str
     language: str
     audience: Optional[str] = None
+    img_model: Optional[str] = "stability"
     model: str
     generate_image: bool = True
 
@@ -42,13 +43,14 @@ def generate_content(data: ContentRequest):
         tone=data.tone,
         language=data.language,
         model=data.model,
+        img_model=data.img_model,
         audience=data.audience
     )
 
     image_url = None
     if data.generate_image:
         # Solo pasamos el texto generado
-        image_url = generate_image_url(text)
+        image_url = generate_image_url(text, data.img_model)
 
     return {
         "text": text,

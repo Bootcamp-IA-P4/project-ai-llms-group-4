@@ -17,7 +17,7 @@ def get_language_instruction(language):
         "Italiano": "Rispondi in italiano con una grammatica corretta e uno stile naturale."
     }.get(language, "Responde en español con corrección y claridad.")
 
-def generate_text_with_context(topic, platform, tone, company, language, model, audience=None):
+def generate_text_with_context(topic, platform, tone, company, language, model,img_model, audience=None):
     """
     Genera contenido adaptado al contexto si la empresa es RuizTech.
     También incorpora información sobre la audiencia objetivo.
