@@ -4,10 +4,33 @@ import io
 import base64
 from langdetect import detect
 from deep_translator import GoogleTranslator
+from .models import ImagePrompt
 from keybert import KeyBERT
 import requests
 import subprocess
 
+
+# OLLAMA FUNCTIONS
+
+def is_ollama_installed():
+    try:
+        result = subprocess.run(["ollama", "--version"], capture_output=True, text=True, check=True)
+        print(f"Ollama installed. Version: {result.stdout.strip()}")
+        return True
+    except FileNotFoundError:
+        print("❌ Ollama is not installed. Please install it from https://ollama.com/docs/installation.")
+        return False
+    except subprocess.CalledProcessError as e:
+        print(f"⚠️ Error trying to run Ollama: {e}")
+        return False
+def is_ollama_running(host="http://localhost:11434") -> bool:
+    try:
+        response = requests.get(f"{host}/api/tags", timeout=2)
+        return True
+    except requests.exceptions.RequestException:
+        print("❌ Ollama is not running. Please start it from https://ollama.com/docs/installation.")
+        return False
+    
 # STRING FUNCTIONS
 
 def detect_and_translate(text: str) -> str:
@@ -20,6 +43,14 @@ def detect_and_translate(text: str) -> str:
         return translated
     return text
 
+def translate_image_prompt(prompt: ImagePrompt) -> ImagePrompt:
+    translated_fields = {}
+    for key, value in prompt.__dict__.items():
+        if isinstance(value, str) and value.strip() != "":
+            translated_fields[key] = detect_and_translate(value)
+        else:
+            translated_fields[key] = value
+    return ImagePrompt(**translated_fields)
 
 def extract_keywords(text, top_n=5):
     kw_model = KeyBERT()
@@ -103,18 +134,6 @@ def get_image_base64_from_url(url):
     else:
         raise Exception(f"Error al descargar imagen: {response.status_code}")
 
-# OLLAMA FUNCTIONS
 
-def is_ollama_installed():
-    try:
-        result = subprocess.run(["ollama", "--version"], capture_output=True, text=True, check=True)
-        print(f"Ollama installed. Version: {result.stdout.strip()}")
-        return True
-    except FileNotFoundError:
-        print("❌ Ollama is not installed. Please install it from https://ollama.com/docs/installation.")
-        return False
-    except subprocess.CalledProcessError as e:
-        print(f"⚠️ Error trying to run Ollama: {e}")
-        return False
 
 
