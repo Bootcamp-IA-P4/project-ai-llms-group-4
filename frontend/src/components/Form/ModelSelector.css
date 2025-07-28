@@ -1,0 +1,71 @@
+/* ModelSelector.css - MAGIC POST Rainbow Design */
+.model-selector {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.model-option {
+  position: relative;
+  flex: 1;
+}
+
+.model-radio {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.model-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border: 2px solid var(--gray-light);
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+}
+
+.model-label:hover {
+  border-color: var(--secondary-color);
+  box-shadow: 0 4px 12px rgba(10, 45, 117, 0.1);
+  transform: translateY(-2px);
+}
+
+.model-name {
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+
+.model-description {
+  font-size: 0.8rem;
+  color: var(--gray-color);
+}
+
+.model-radio:checked + .model-label {
+  border-color: var(--accent-color);
+  background-color: rgba(222, 153, 255, 0.05);
+  box-shadow: 0 4px 12px rgba(10, 45, 117, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.model-radio:checked + .model-label .model-name {
+  background: var(--gradient-rainbow);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  font-weight: 700;
+}
+
+.model-radio:focus + .model-label {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
