@@ -26,6 +26,9 @@ def generate_text(prompt, model):
     response = requests.post(API_URL, headers=headers, json=payload)
 
     if response.status_code == 200:
-        return response.json()["choices"][0]["message"]["content"]
+        try:
+            return response.json()["choices"][0]["message"]["content"]
+        except (KeyError, IndexError, ValueError) as e:
+            raise Exception(f"Invalid JSON structure in response: {response.text}") from e
     else:
         return f"Error: {response.status_code} - {response.text}"
