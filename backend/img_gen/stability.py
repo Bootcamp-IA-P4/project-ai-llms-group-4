@@ -68,7 +68,7 @@ if __name__ == "__main__":
     default="./server/output/output.png",
     help="Path to save the generated image (default: output/output.png)",
     )
-    args = parser.parse_args
+    args = parser.parse_args()
     if args.img:
         print("Generando imagen con el prompt:", args.img)
         main(args.img,args.path)
