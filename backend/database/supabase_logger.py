@@ -16,6 +16,10 @@ def log_post_to_supabase(data: dict):
         "image_url": data.get("image_url"),
         "created_at": datetime.utcnow().isoformat()
     }
+    
+    print("📝 Payload a insertar en Supabase:")
+    for k, v in payload.items():
+        print(f"{k}: {v}")
 
     try:
         response = client.table("posts_history").insert(payload).execute()

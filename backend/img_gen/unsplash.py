@@ -46,7 +46,12 @@ def search_unsplash_by_keywords(keywords):
 
 def main(img = default_image_prompt, output_path = "server/image-gen/output/output.png"):
     unsplash_img  = search_unsplash_by_keywords(extract_keywords(img.to_prompt() if isinstance(img, ImagePrompt) else img, top_n=5))
-    return download_image_from_url(unsplash_img, output_path) if output_path != "" and output_path is not None else get_image_base64_from_url(unsplash_img)
+    if output_path and output_path.strip() != "":
+        download_image_from_url(unsplash_img, output_path)
+        return output_path
+    else:
+     return get_image_base64_from_url(unsplash_img)
+
 
 if __name__ == "__main__":
     # Argument parser for command line arguments

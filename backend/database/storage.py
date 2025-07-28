@@ -9,17 +9,17 @@ def upload_image_to_supabase(local_path: str, bucket_name="posts") -> str:
     """
     client = get_supabase_client()
     file_name = Path(local_path).name
-    storage_path = f"{bucket_name}/{file_name}"
+    storage_path = file_name 
 
     try:
-        # Subir el archivo al bucket especificado
         with open(local_path, "rb") as f:
-            res = client.storage.from_(bucket_name).upload(storage_path, f, {"upsert": True})
+            print(f"📤 Subiendo imagen '{file_name}' a bucket '{bucket_name}'...")
+            res = client.storage.from_(bucket_name).upload(storage_path, f, {"upsert": "true"})
 
-        # Obtener la URL pública
         public_url = client.storage.from_(bucket_name).get_public_url(storage_path)
+        print(f"🌐 URL pública generada: {public_url}")
         return public_url
 
     except Exception as e:
-        print(f"❌ Error subiendo imagen a Supabase Storage: {e}")
+        print(f"❌ Error subiendo imagen a Supabase: {e}")
         return None

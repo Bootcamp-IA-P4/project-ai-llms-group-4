@@ -71,19 +71,22 @@ def generate_content(data: ContentRequest):
         audience=data.audience
     )
 
-    # 2️⃣ (Opcional) Generar imagen
+        # 2️⃣ (Opcional) Generar imagen
     image_url = None
     if data.generate_image:
-        try:
-            image_path = generate_image_url(text, data.img_model)
-            if image_path and os.path.exists(image_path):
-                # 3️⃣ Subir imagen a Supabase Storage
-                uploaded_url = upload_image_to_supabase(image_path)
-                if uploaded_url and uploaded_url.startswith("http"):
-                    image_url = uploaded_url
-        except Exception as e:
-            print(f"⚠️ Error al generar o subir imagen: {e}")
-            image_url = None
+        image_path = generate_image_url(text, data.img_model)
+        if image_path and os.path.exists(image_path):
+            uploaded_url = upload_image_to_supabase(image_path)
+            if uploaded_url and uploaded_url.startswith("http"):
+                image_url = uploaded_url
+                try:
+                    os.remove(image_path)
+                except Exception as del_err:
+                    print(f"⚠️ No se pudo eliminar imagen local: {del_err}")
+            else:
+                print("⚠️ La imagen no se subió correctamente")
+        else:
+            print("⚠️ No se generó imagen válida")
 
     # 4️⃣ Guardar en Pinecone (vectorial)
     save_post(

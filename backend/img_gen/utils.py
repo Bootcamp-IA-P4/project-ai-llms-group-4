@@ -78,13 +78,13 @@ def save_image(image, filepath):
         new_filepath = filepath
         counter = 1
 
-        while os.path.exists(new_filepath):
-            respuesta = input(f"⚠️ File '{new_filepath}' already exists. Overwrite? (y/n): ").strip().lower()
-            if respuesta == 'y':
-                break
-            else:
-                new_filepath = f"{base}_{counter}{ext}"
-                counter += 1
+        # Si el archivo existe, simplemente lo sobrescribimos
+        if os.path.exists(new_filepath):
+            print(f"⚠️ Overwriting existing file: {new_filepath}")
+
+        image.save(new_filepath)
+        print(f"💾 Image saved to {new_filepath}")
+
         
         image.save(new_filepath)
         print(f"💾 Image saved to {new_filepath}")
