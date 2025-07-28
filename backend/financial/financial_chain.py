@@ -28,8 +28,16 @@ def get_language_instruction(language: str) -> str:
     return {
         "Español": "Responde en español con corrección y claridad. Usa un estilo periodístico profesional.",
         "Inglés": "Respond in English with correct grammar and professional journalistic style.",
-        "Francés": "Réponds en français avec une grammaire correcte et un style journalistique professionnel.",
-        "Italiano": "Rispondi in italiano con una grammatica corretta e uno stile giornalistico professionale."
+        "Francés": """
+INSTRUCTION CRITIQUE: Tu dois répondre SEULEMENT en français, JAMAIS en espagnol ou anglais.
+Réponds en français avec une grammaire correcte et un style journalistique professionnel.
+IMPORTANT: Utilise seulement la langue française pour toute la réponse.
+        """,
+        "Italiano": """
+INSTRUCCIÓN CRÍTICA: Devi rispondere SOLO in italiano, NEVER in Spanish or English.
+Rispondi in italiano con una grammatica corretta e uno stile giornalistico professionale.
+IMPORTANTE: Usa solo la lingua italiana per tutta la risposta.
+        """
     }.get(language, "Responde en español con corrección y claridad.")
 
 def clean_llm_response(raw_response: str) -> str:
@@ -40,12 +48,6 @@ def clean_llm_response(raw_response: str) -> str:
     - Prefijos explicativos del LLM
     - Comentarios sobre la tarea
     - Metadata innecesaria
-    
-    Args:
-        raw_response: Respuesta cruda del LLM
-        
-    Returns:
-        str: Noticia limpia y lista para publicar
     """
     
     # Eliminar prefijos comunes del LLM
@@ -121,20 +123,8 @@ def generate_financial_news(topic: str, language: str, market_data: str) -> str:
     - El topic del usuario
     
     Y lo envía todo estructurado a Groq para generar una noticia profesional.
-    
-    Args:
-        topic: Lo que quiere el usuario (ej: "Tesla stock analysis")
-        language: Idioma del contenido ("Español", "Inglés", etc.)
-        market_data: Datos financieros formateados de financial_tools.py
-        
-    Returns:
-        str: Noticia financiera final lista para publicar
     """
     try:
-        print(f"🤖 Generando noticia financiera...")
-        print(f"   📝 Topic: {topic}")
-        print(f"   🗣️ Language: {language}")
-        
         # Obtener instrucciones específicas de idioma
         language_instruction = get_language_instruction(language)
         
@@ -153,13 +143,9 @@ def generate_financial_news(topic: str, language: str, market_data: str) -> str:
         
         # Limpiar la respuesta del LLM
         clean_content = clean_llm_response(raw_content)
-        
-        print(f"✅ Noticia generada exitosamente")
         return clean_content
         
     except Exception as e:
-        print(f"❌ Error generando noticia: {str(e)}")
-        
         # Fallback: noticia básica si falla Groq
         fallback_templates = {
             "Español": f"""
@@ -205,4 +191,3 @@ Queste informazioni sono solo educative, non costituiscono consigli di investime
         
         fallback_content = fallback_templates.get(language, fallback_templates["Español"])
         return fallback_content.strip()
-
