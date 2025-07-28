@@ -49,11 +49,11 @@ def main(img=default_image_prompt, output_path="server/image-gen/output/output.p
     image_url = search_pexels_by_keywords(
         extract_keywords(img.to_prompt() if isinstance(img, ImagePrompt) else img, top_n=5)
     )
-    return (
+    if output_path:
         download_image_from_url(image_url, output_path)
-        if output_path
-        else get_image_base64_from_url(image_url)
-    )
+        return output_path
+    else:
+        return get_image_base64_from_url(image_url)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate images using Pexels API.")
