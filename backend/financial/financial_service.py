@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 from typing import Dict, Any
-from .models import FinancialNewsRequest, FinancialNewsResponse
+from .models import FinancialNewsRequest
 from .financial_tools import get_stock_data, format_market_data_for_llm
 from .financial_chain import generate_financial_news as generate_news_with_llm
 import time
@@ -18,35 +18,18 @@ def generate_financial_news(request: FinancialNewsRequest) -> Dict[str, Any]:
     5. Devuelve todo estructurado
     
     Es el "director de orquesta" que coordina todos los demás archivos.
-    
-    Args:
-        request: FinancialNewsRequest con topic, company y language
-        
-    Returns:
-        Dict: Respuesta completa con noticia y metadatos
     """
-    
-    print(f"🎯 Iniciando generación de noticia financiera...")
-    print(f"   📝 Topic: {request.topic}")
-    print(f"   🏢 Company: {request.company}")
-    print(f"   🗣️ Language: {request.language}")
     
     try:
         # 1. Obtener datos financieros para la empresa específica
-        print(f"\n📊 1. Obteniendo datos del mercado para {request.company}...")
         stock_data = get_stock_data(request.company)
-        
         symbol = stock_data.get("symbol", "UNKNOWN")
         company_name = stock_data.get("company_name", request.company)
-        print(f"   🏷️ Símbolo detectado: {symbol}")
-        print(f"   ✅ Datos obtenidos: {stock_data.get('success', False)}")
         
         # 2. Formatear datos para el LLM
-        print(f"\n🔄 2. Formateando datos para Groq...")
         formatted_market_data = format_market_data_for_llm(stock_data)
         
         # 3. Generar noticia financiera
-        print(f"\n🤖 3. Generando noticia con Groq...")
         generated_news = generate_news_with_llm(
             topic=request.topic,
             language=request.language,
@@ -54,8 +37,6 @@ def generate_financial_news(request: FinancialNewsRequest) -> Dict[str, Any]:
         )
         
         # 4. Estructurar respuesta final
-        print(f"\n📦 4. Estructurando respuesta...")
-        
         response_data = {
             "news_content": generated_news,
             "symbol": symbol,
@@ -64,7 +45,6 @@ def generate_financial_news(request: FinancialNewsRequest) -> Dict[str, Any]:
                 "company_name": company_name,
                 "success": stock_data.get("success", False),
                 "timestamp": stock_data.get("timestamp", datetime.now().isoformat()),
-                "query_used": stock_data.get("query_used", ""),
                 "has_real_data": stock_data.get("success", False),
                 "source": stock_data.get("source", "unknown")
             },
@@ -75,14 +55,9 @@ def generate_financial_news(request: FinancialNewsRequest) -> Dict[str, Any]:
                 "language": request.language
             }
         }
-        
-        print(f"✅ Noticia generada exitosamente!")
-        print(f"   📏 Longitud de la noticia: {len(generated_news)} caracteres")
-        print(f"   🏷️ Símbolo final: {symbol}")
-        print(f"   🏢 Empresa: {company_name}")
 
         # 5. Guardar en base de datos
-        start_time = time.time()  # Para calcular processing_time
+        start_time = time.time()
         processing_time_ms = int((time.time() - start_time) * 1000)
 
         from backend.database.repository import save_financial_news_record
@@ -93,16 +68,14 @@ def generate_financial_news(request: FinancialNewsRequest) -> Dict[str, Any]:
                 processing_time_ms=processing_time_ms,
                 success=True
             )
-            print(f"💾 Guardado en base de datos exitoso")
         except Exception as e:
-            print(f"⚠️ Error guardando en BD (no crítico): {e}")
+            # Error guardando en BD (no crítico)
+            pass
         
         return response_data
         
     except Exception as e:
-        print(f"❌ Error en generate_financial_news: {str(e)}")
-        
-        # Sistema de fallback robusto
+        # Sistema de fallback
         return create_fallback_news_response(request, str(e))
 
 def create_fallback_news_response(request: FinancialNewsRequest, error_message: str) -> Dict[str, Any]:
@@ -111,16 +84,7 @@ def create_fallback_news_response(request: FinancialNewsRequest, error_message: 
     
     Principio: El sistema NUNCA debe devolver error 500 al usuario.
     Siempre devuelve una noticia útil, aunque sea básica.
-    
-    Args:
-        request: La petición original del usuario
-        error_message: El error que ocurrió
-        
-    Returns:
-        Dict: Respuesta de fallback funcional
     """
-    
-    print(f"🛡️ Creando noticia de fallback...")
     
     # Noticias de fallback según idioma
     fallback_news_templates = {
@@ -171,7 +135,7 @@ Notizia Finanziaria: {topic} - {company}
 
 I mercati finanziari continuano a mostrare movimenti significativi nel settore relativo a {company}.
 
-A causa dell'attuale volatilità del mercato, i dati specifici in tempo reale per {company} non sono disponibili in questo momento.
+A causa dell'attuale volatilità del mercado, i dati specifici in tempo reale per {company} non sono disponibili in questo momento.
 
 Gli analisti raccomandano agli investitori di rimanere informati attraverso fonti ufficiali e di monitorare attentamente gli indicatori economici rilevanti prima di prendere decisioni di investimento.
 
@@ -200,7 +164,6 @@ Queste informazioni sono solo educative, non costituiscono consigli di investime
             "company_name": request.company,
             "success": False,
             "timestamp": datetime.now().isoformat(),
-            "error": error_message,
             "has_real_data": False,
             "source": "fallback"
         },
@@ -213,41 +176,4 @@ Queste informazioni sono solo educative, non costituiscono consigli di investime
         "is_fallback": True
     }
     
-    print(f"🛡️ Noticia de fallback creada exitosamente")
     return response_data
-
-def validate_financial_news_request(request: FinancialNewsRequest) -> bool:
-    """
-    Valida que la petición del usuario sea correcta.
-    
-    Validaciones básicas:
-    - Topic no vacío
-    - Company no vacía
-    - Language soportado
-    
-    Args:
-        request: FinancialNewsRequest a validar
-        
-    Returns:
-        bool: True si es válida, False si no
-    """
-    
-    # Validar topic
-    if not request.topic or len(request.topic.strip()) < 3:
-        print(f"❌ Topic inválido: '{request.topic}'")
-        return False
-    
-    # Validar company
-    if not request.company or len(request.company.strip()) < 2:
-        print(f"❌ Company inválida: '{request.company}'")
-        return False
-    
-    # Validar language
-    supported_languages = ["Español", "Inglés", "Francés", "Italiano"]
-    if request.language not in supported_languages:
-        print(f"❌ Idioma no soportado: '{request.language}'")
-        print(f"   Idiomas soportados: {supported_languages}")
-        return False
-    
-    print(f"✅ Petición válida")
-    return True
