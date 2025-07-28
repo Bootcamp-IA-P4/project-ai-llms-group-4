@@ -19,7 +19,7 @@ const ContentResult = ({ content, prompt, imageUrl }) => {
       
       <div className="result-section">
         <div className="result-header">
-          <h3>📄 Contenido</h3>
+          <h3>Contenido</h3>
           <button 
             className="copy-button" 
             onClick={() => copyToClipboard(content)}
@@ -38,7 +38,7 @@ const ContentResult = ({ content, prompt, imageUrl }) => {
 
       {imageUrl && (
         <div className="result-section">
-          <h3>🖼️ Imagen generada</h3>
+          <h3>Imagen generada</h3>
           <div className="image-container">
             <img src={imageUrl} alt="Imagen generada con IA" className="generated-image" />
             <a href={imageUrl} download="ai-generated-image.jpg" className="download-button">
@@ -48,21 +48,7 @@ const ContentResult = ({ content, prompt, imageUrl }) => {
         </div>
       )}
 
-      <div className="result-section prompt-section">
-        <div className="result-header">
-          <h3>🧪 Prompt utilizado</h3>
-          <button 
-            className="copy-button" 
-            onClick={() => copyToClipboard(prompt)}
-            data-tooltip-id="tooltip-component" 
-            data-tooltip-content="Copiar al portapapeles"
-          >
-            Copiar
-          </button>
-        </div>
-        <pre className="prompt-display">{prompt}</pre>
-      </div>
-
+     
       <div className="action-buttons">
         <button className="action-button share-button">
           Compartir resultados

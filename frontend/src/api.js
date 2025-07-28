@@ -20,23 +20,84 @@ api.interceptors.response.use(
 
 export const generateContent = async (formData) => {
   try {
-    const response = await api.post('/generate', {
+    const requestData = {
       topic: formData.topic,
       platform: formData.platform,
       company: formData.company,
       tone: formData.tone,
-      language: formData.language,
+      language: formData.language === 'Español' ? 'es' : formData.language === 'Inglés' ? 'en' : formData.language === 'Francés' ? 'fr' : 'it',
       audience: formData.audience,
+      img_model: 'remote',
       model: formData.model,
-      generate_image: formData.generateImage,
-      imageMode: formData.imageMode,
-      imageSize: formData.imageSize,
-      imageStyle: formData.imageStyle,
-      imagePrompt: formData.imagePrompt
-    });
+      generate_image: formData.generateImage
+    };
+
+    const response = await api.post('/generate', requestData);
     return response.data;
   } catch (error) {
     console.error('Error generando contenido:', error);
+    throw error;
+  }
+};
+
+// Nueva función para búsqueda semántica
+export const searchContent = async (query, topK = 3) => {
+  try {
+    const requestData = {
+      query: query,
+      top_k: topK
+    };
+
+    const response = await api.post('/search', requestData);
+    return response.data;
+  } catch (error) {
+    console.error('Error en búsqueda:', error);
+    throw error;
+  }
+};
+
+// Nueva función para subir documentos
+export const uploadDocument = async (file) => {
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await api.post('/upload_document', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error subiendo documento:', error);
+    throw error;
+  }
+};
+
+// Nueva función para generar noticias financieras
+export const generateFinancialNews = async (topic, company, language) => {
+  try {
+    const requestData = {
+      topic: topic,
+      company: company,
+      language: language
+    };
+
+    const response = await api.post('/financial-news', requestData);
+    return response.data;
+  } catch (error) {
+    console.error('Error generando noticia financiera:', error);
+    throw error;
+  }
+};
+
+// Nueva función para obtener todas las noticias financieras
+export const getFinancialNews = async (limit = 10) => {
+  try {
+    const response = await api.get(`/financial-news?limit=${limit}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error obteniendo noticias financieras:', error);
     throw error;
   }
 };

@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import ButtonSelector from './ButtonSelector';
 import ImageToggle from './ImageToggle';
+import SearchButton from './SearchButton';
+import UploadButton from './UploadButton';
 import './ContentForm.css';
 
 // Importar iconos de plataformas
@@ -11,18 +13,15 @@ import instagramIcon from '../../assets/images/instagram.svg';
 import blogIcon from '../../assets/images/blog.svg';
 
 const ContentForm = ({ onSubmit, loading }) => {  const [formData, setFormData] = useState({
-    topic: 'Inteligencia Artificial',
-    platform: 'Twitter',
-    company: '',
-    tone: 'Profesional',
+    topic: 'contenido para ingenieros',
+    platform: 'Instagram',
+    company: 'Círculo Creativo',
+    tone: 'inspirador',
     language: 'Español',
-    audience: '',
-    model: 'meta-llama/llama-3-8b-instruct',
-    generateImage: true,
-    imageMode: 'automatic',
-    imageSize: '1024x1024',
-    imageStyle: 'photographic',
-    imagePrompt: '',
+    audience: 'jóvenes diseñadores',
+    model: 'mistralai/mistral-7b-instruct',
+    generateImage: false,  // Cambié a false
+    imageMode: 'remote',
   });
 
   const handleChange = (e) => {
@@ -32,6 +31,14 @@ const ContentForm = ({ onSubmit, loading }) => {  const [formData, setFormData] 
       [name]: type === 'checkbox' ? checked : value,
     });
   };
+
+  // Función para manejar contenido seleccionado desde SearchButton
+  const handleContentSelect = (selectedContent) => {
+    setFormData(prev => ({
+      ...prev,
+      topic: selectedContent
+    }));
+  };
   // Model selection is now handled directly by the ModelSelector component
   const handleImageModeChange = (mode) => {
     setFormData({
@@ -39,21 +46,22 @@ const ContentForm = ({ onSubmit, loading }) => {  const [formData, setFormData] 
       imageMode: mode
     });
   };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit(formData);
-  };  // Opciones para los selectores
-  // Nota: Estos arrays son manejados directamente por sus componentes respectivos
-  const tones = ["Profesional", "Cercano", "Informativo", "Humorístico", "Técnico", "Inspirador", "Motivacional", "Formal", "Casual", "Persuasivo"];
-  const languages = ["Español", "Inglés", "Francés", "Italiano", "Portugués", "Alemán"];
-  const models = ["meta-llama/llama-3-8b-instruct", "gpt-3.5-turbo", "claude-3-haiku", "mistral-7b-instruct"];
+  };
+
+  // Opciones para los selectores
+  const tones = ["profesional", "cercano", "informativo", "humorístico", "técnico", "inspirador", "motivacional", "formal", "casual", "persuasivo"];
+  const languages = ["Español", "Inglés", "Francés", "Italiano"];
+  const models = ["mistralai/mistral-7b-instruct", "meta-llama/llama-3-8b-instruct", "openai/gpt-3.5-turbo"];
   const platforms = [
     { name: 'Twitter', icon: twitterIcon },
     { name: 'Instagram', icon: instagramIcon },
     { name: 'LinkedIn', icon: linkedinIcon },
     { name: 'Blog', icon: blogIcon }
   ];
+
   return (
     <motion.div 
       className="form-container"
@@ -66,7 +74,8 @@ const ContentForm = ({ onSubmit, loading }) => {  const [formData, setFormData] 
           className="content-form" 
           aria-labelledby="main-title" 
           aria-describedby="main-description"
-        ><div className="form-grid" role="group">
+        >
+        <div className="form-grid" role="group">
           {/* Primera fila: Tema y Marca/Empresa */}
           <div className="form-group">
             <label htmlFor="topic" className="form-label">
@@ -82,6 +91,9 @@ const ContentForm = ({ onSubmit, loading }) => {  const [formData, setFormData] 
               className="form-input"
               required
             />
+            <div className="upload-below-input">
+              <UploadButton />
+            </div>
           </div>
           <div className="form-group">
             <label htmlFor="company" className="form-label">
@@ -98,7 +110,6 @@ const ContentForm = ({ onSubmit, loading }) => {  const [formData, setFormData] 
               placeholder="Nombre de tu empresa"
             />
           </div>
-          
           {/* Segunda fila: Idioma y Tono */}
           <div className="form-group">
             <label className="form-label">
@@ -123,7 +134,8 @@ const ContentForm = ({ onSubmit, loading }) => {  const [formData, setFormData] 
               onChange={handleChange}
               name="tone"
             />
-          </div>          {/* Tercera fila: Modelo y Audiencia */}
+          </div>
+          {/* Tercera fila: Modelo y Audiencia */}
           <div className="form-group">
             <label className="form-label">
               Modelo LLM
@@ -152,34 +164,38 @@ const ContentForm = ({ onSubmit, loading }) => {  const [formData, setFormData] 
             />
           </div>
         </div>
-          {/* Plataforma en su propia fila */}
-        <div className="form-group platform-group">
-          <label className="form-label">
-            Plataforma
-            <span className="tooltip-icon" data-tooltip-id="tooltip-component" data-tooltip-content="Selecciona la red social para la que se adaptará el contenido">i</span>
-          </label>
-          <ButtonSelector 
-            options={platforms}
-            selected={formData.platform}
-            onChange={handleChange}
-            name="platform"
-          />
+        {/* Agrupa plataforma y generación de imagen en una fila visual */}
+        <div className="platform-image-row">
+          <div className="form-group platform-group">
+            <label className="form-label">
+              Plataforma
+              <span className="tooltip-icon" data-tooltip-id="tooltip-component" data-tooltip-content="Selecciona la red social para la que se adaptará el contenido">i</span>
+            </label>
+            <ButtonSelector 
+              options={platforms}
+              selected={formData.platform}
+              onChange={handleChange}
+              name="platform"
+            />
+          </div>
+          <div className="form-group image-generation-container">
+            <ImageToggle
+              isChecked={formData.generateImage}
+              onChange={(e) => handleChange({
+                target: {
+                  name: 'generateImage',
+                  type: 'checkbox',
+                  checked: e.target.checked
+                }
+              })}
+              onModeChange={handleImageModeChange}
+            />
+          </div>
         </div>
-        
-        <div className="form-group image-generation-container">
-          <ImageToggle
-            isChecked={formData.generateImage}
-            onChange={(e) => handleChange({
-              target: {
-                name: 'generateImage',
-                type: 'checkbox',
-                checked: e.target.checked
-              }
-            })}
-            onModeChange={handleImageModeChange}          />
-          
+        {/* Componente de búsqueda de publicaciones */}
+        <div className="search-section">
+          <SearchButton onContentSelect={handleContentSelect} />
         </div>
-        
         <button 
           type="submit" 
           className={`submit-button ${loading ? 'loading' : ''}`}

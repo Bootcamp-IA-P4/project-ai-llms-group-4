@@ -1,22 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import './Header.css';
 
-const Header = ({ currentView, onNavigate }) => {
+const Header = () => {
+  const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isFooterVisible, setIsFooterVisible] = useState(false);
   const headerRef = useRef(null);
-
-  const handleNavClick = (e, view) => {
-    e.preventDefault();
-    if (onNavigate) {
-      onNavigate(view);
-    }
+  const handleNavClick = () => {
     setIsMenuOpen(false); // Close menu on navigation
   };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
-  };  // Close menu when clicking outside
+  };// Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (headerRef.current && !headerRef.current.contains(event.target)) {
@@ -120,35 +117,61 @@ const Header = ({ currentView, onNavigate }) => {
             >
               ×
             </button>
-          </div>
-          <ul>
+          </div>          <ul>
             <li>
-              <a 
-                href="/" 
-                className={`nav-link ${currentView === 'home' ? 'active' : ''}`}
-                onClick={(e) => handleNavClick(e, 'home')}
+              <Link 
+                to="/" 
+                className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
+                onClick={handleNavClick}
               >
-                Inicio
-              </a>
-            </li>            <li>
-              <a 
-                href="/pro" 
-                className={`nav-link ${currentView === 'mp-pro' ? 'active' : ''}`}
-                onClick={(e) => handleNavClick(e, 'mp-pro')}
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link 
+                to="/generate" 
+                className={`nav-link ${location.pathname === '/generate' ? 'active' : ''}`}
+                onClick={handleNavClick}
+              >
+                MP Generator
+              </Link>
+            </li>
+            <li>
+              <Link 
+                to="/finance" 
+                className={`nav-link ${location.pathname === '/finance' ? 'active' : ''}`}
+                onClick={handleNavClick}
+              >
+                MP Finance
+              </Link>
+            </li>
+            <li>
+              <Link 
+                to="/pro" 
+                className={`nav-link ${location.pathname === '/pro' ? 'active' : ''}`}
+                onClick={handleNavClick}
               >
                 MP PRO
-              </a>
+              </Link>
             </li>
             <li>
-              <a 
-                href="/about" 
-                className={`nav-link ${currentView === 'about' ? 'active' : ''}`}
-                onClick={(e) => handleNavClick(e, 'about')}
+              <Link 
+                to="/about" 
+                className={`nav-link ${location.pathname === '/about' ? 'active' : ''}`}
+                onClick={handleNavClick}
               >
                 Acerca de
-              </a>
+              </Link>
             </li>
-            <li><a href="/contact" className="nav-link contact-btn">Contacto</a></li>
+            <li>
+              <Link 
+                to="/contact" 
+                className="nav-link contact-btn"
+                onClick={handleNavClick}
+              >
+                Contacto
+              </Link>
+            </li>
           </ul>
         </nav>
       </div>

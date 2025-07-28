@@ -272,7 +272,7 @@ git clone https://github.com/mikewig/project-ai-llms-group-4.git
 cd project-ai-llms-group-4
 
 # 2. Crear entorno virtual Python
-cd backend
+
 python -m venv venv
 
 # 3. Activar entorno virtual
@@ -285,26 +285,19 @@ python -m venv venv
 
 # 4. Actualizar pip e instalar dependencias
 python -m pip install --upgrade pip
-pip install -r requirements.txt
+pip install -r backend/requirements.txt
 
-# 5. Verificar instalación de dependencias críticas
-pip install langchain-huggingface sentence-transformers pinecone-client
 
-# 6. Verificar imports críticos
-python -c "
-from langchain_huggingface import HuggingFaceEmbeddings
-from pinecone import Pinecone
-from backend.vector_db.db_manager import search_similar
-print('✅ Todas las dependencias instaladas correctamente')
-"
 ```
 
 ### ⚡ **Iniciar Backend**
 
 ```powershell
 # Desde la raíz del proyecto (importante!)
-cd ..
-uvicorn backend.main:app --reload --port 8000 --host 0.0.0.0
+
+uvicorn backend.main:app --reload
+
+
 
 # ✅ Backend disponible en: http://localhost:8000
 # 📖 Documentación API: http://localhost:8000/docs
@@ -1071,10 +1064,10 @@ SOFTWARE.
 ## 👥 Equipo y Reconocimientos
 
 ### 🧑‍💻 **Core Contributors**
-- **[@mikewig](https://github.com/mikewig)** - Team Lead & Architecture
-- **[@contributor2](https://github.com/contributor2)** - Frontend Development
-- **[@contributor3](https://github.com/contributor3)** - AI/ML Engineering
-- **[@contributor4](https://github.com/contributor4)** - Backend & DevOps
+- **[@mikewig](https://github.com/mikewig)**
+- **[@merkandez](https://github.com/merkandez)**
+- **[@peperuizdev](https://github.com/peperuizdev)** 
+- **[@stephyangeles](https://github.com/stephyangeles)** 
 
 ### 🙏 **Agradecimientos Especiales**
 - **Bootcamp IA** - Por el marco de aprendizaje y desarrollo
