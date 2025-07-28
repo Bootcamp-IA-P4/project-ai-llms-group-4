@@ -85,10 +85,6 @@ def save_image(image, filepath):
         image.save(new_filepath)
         print(f"💾 Image saved to {new_filepath}")
 
-        
-        image.save(new_filepath)
-        print(f"💾 Image saved to {new_filepath}")
-
     except Exception as e:
         print(f"Error saving image: {e}")
         exit(1)
