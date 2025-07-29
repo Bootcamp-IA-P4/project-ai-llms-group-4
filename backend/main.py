@@ -11,6 +11,8 @@ from backend.vector_db.db_manager import save_post, search_similar, ingest_docum
 from backend.agents.agent import image_agent
 from fastapi import Body
 from backend.cience_data.arxiv import search_arxiv, download_and_extract, ingest_arxiv_documents, create_arxiv_rag_chain
+from backend.database.supabase_logger import log_post_to_supabase
+from backend.database.storage import upload_image_to_supabase
 
 app = FastAPI()
 
@@ -105,10 +107,11 @@ def read_root():
 @app.post("/generate")
 def generate_content(data: ContentRequest):
     """
-    1️⃣ Genera el texto y el prompt usado.
-    2️⃣ (Opcional) Genera imagen usando el texto generado como prompt.
-    3️⃣ Guarda todo en la base vectorial.
-    4️⃣ Devuelve los resultados al frontend.
+    1️⃣ Genera texto e imagen (opcional).
+    2️⃣ Sube imagen a Supabase Storage (si existe).
+    3️⃣ Guarda en Pinecone (vectorial).
+    4️⃣ Guarda en Supabase (relacional).
+    5️⃣ Devuelve respuesta.
     """
     # Fallback: si no se proporciona model_research, usa el mismo que model_writer
     model_research = data.model_research or data.model_writer
@@ -126,12 +129,31 @@ def generate_content(data: ContentRequest):
         audience=data.audience
     )
 
+
     # 2️⃣ (Opcional) Generar imagen
     image_url = None
     if data.generate_image:
         image_url = image_agent(text, data.img_model)
 
     # 3️⃣ Guardar en Pinecone (vectorial)
+        # 2️⃣ (Opcional) Generar imagen
+    image_url = None
+    if data.generate_image:
+        image_path = generate_image_url(text, data.img_model)
+        if image_path and os.path.exists(image_path):
+            uploaded_url = upload_image_to_supabase(image_path)
+            if uploaded_url and uploaded_url.startswith("http"):
+                image_url = uploaded_url
+                try:
+                    os.remove(image_path)
+                except Exception as del_err:
+                    print(f"⚠️ No se pudo eliminar imagen local: {del_err}")
+            else:
+                print("⚠️ La imagen no se subió correctamente")
+        else:
+            print("⚠️ No se generó imagen válida")
+
+    # 4️⃣ Guardar en Pinecone (vectorial)
     save_post(
         text=text,
         prompt=prompt_used,
@@ -145,6 +167,20 @@ def generate_content(data: ContentRequest):
     )
 
     # 4️⃣ Devolver resultado
+    # 5️⃣ Guardar en Supabase (relacional)
+    log_post_to_supabase({
+        "prompt": prompt_used,
+        "text": text,
+        "platform": data.platform,
+        "tone": data.tone,
+        "company": data.company,
+        "language": data.language,
+        "audience": data.audience,
+        "model": data.model,
+        "image_url": image_url
+    })
+
+    # 6️⃣ Devolver al frontend
     return {
         "text": text,
         "image_url": image_url
