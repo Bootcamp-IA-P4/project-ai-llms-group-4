@@ -156,7 +156,9 @@ def upload_document(
         ingest_document(temp_path, source_name=file.filename)
         file_url = upload_document_to_supabase(temp_path)
 
-        os.remove(temp_path)
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+
 
     text, prompt_used = generate_text_with_context(
         topic=topic,
