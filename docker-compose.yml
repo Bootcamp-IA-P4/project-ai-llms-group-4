@@ -1,0 +1,18 @@
+version: '3.9'
+
+services:
+  backend:
+    build: ./backend
+    container_name: backend
+    ports:
+      - "8000:8000"
+    environment:
+      - ENV=production
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "3000:3000"    # Map container port 3000 (Node default) to host 3000
+    depends_on:
+      - backend
