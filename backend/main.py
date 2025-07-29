@@ -157,8 +157,8 @@ def search_content(data: SearchRequest):
         ))
     return {"results": output}
 
-@app.post("/upload_document")
-def upload_document(file: UploadFile = File(...)):
+@app.post("/index_document")
+def index_document(file: UploadFile = File(...)):
     """
     Sube un documento (.txt, .pdf, .docx, .md), lo convierte a texto
     y lo indexa en Pinecone para su posterior recuperación semántica.
