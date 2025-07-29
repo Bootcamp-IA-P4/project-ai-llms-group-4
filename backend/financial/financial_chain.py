@@ -160,6 +160,13 @@ def generate_financial_news(topic: str, language: str, market_data: str) -> str:
             "language_instruction": language_instruction,
             "market_data": market_data,
             "topic": topic
+        }, config={
+            "tags": ["financial-news", "groq-llm"],
+            "metadata": {
+                "service": "financial-news",
+                "language": language,
+                "topic": topic
+            }
         })
         
         # Extraer el contenido del resultado
