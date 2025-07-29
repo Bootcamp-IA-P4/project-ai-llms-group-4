@@ -11,6 +11,7 @@ from backend.vector_db.db_manager import save_post, search_similar, ingest_docum
 from backend.vector_db.document_reader import extract_text_from_file
 from backend.database.supabase_logger import log_post_to_supabase
 from backend.database.storage import upload_image_to_supabase
+from backend.database.storage import upload_document_to_supabase
 
 app = FastAPI()
 
@@ -150,7 +151,8 @@ def upload_document(
 
         extra_context = extract_text_from_file(temp_path)
         ingest_document(temp_path, source_name=file.filename)
-        file_url = upload_image_to_supabase(temp_path)
+        file_url = upload_document_to_supabase(temp_path)
+
         os.remove(temp_path)
 
     text, prompt_used = generate_text_with_context(
