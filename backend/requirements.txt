@@ -44,3 +44,4 @@ langchain-huggingface
 python-dotenv
 pinecone
 
+python-multipart

@@ -1,0 +1,229 @@
+.floating-bot {
+  position: fixed;
+  width: 120px;
+  height: 120px;
+  z-index: 1000;
+  cursor: grab;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffffff 0%, #70d3f1 50%, #c2c6fd 100%);
+  box-shadow: 0 6px 25px rgba(112, 211, 241, 0.4), 0 0 20px rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: float 3s ease-in-out infinite;
+  border: 4px solid rgba(112, 211, 241, 0.3);
+  user-select: none;
+}
+
+.floating-bot:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 35px rgba(112, 211, 241, 0.6), 0 0 30px rgba(255, 255, 255, 1);
+}
+
+.floating-bot.dragging {
+  cursor: grabbing;
+  transform: scale(1.05);
+  box-shadow: 0 10px 40px rgba(112, 211, 241, 0.7), 0 0 35px rgba(255, 255, 255, 1);
+  animation: none;
+}
+
+.close-btn {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #ff4757;
+  color: white;
+  border: none;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(255, 71, 87, 0.4);
+}
+
+.close-btn:hover {
+  background: #ff3742;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(255, 71, 87, 0.6);
+}
+
+.bot-image {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  pointer-events: none;
+  filter: drop-shadow(0 3px 6px rgba(112, 211, 241, 0.3));
+}
+
+.bot-tooltip {
+  position: absolute;
+  top: -55px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #70d3f1 0%, #c2c6fd 100%);
+  color: white;
+  padding: 12px 18px;
+  border-radius: 25px;
+  font-size: 14px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 999;
+  max-width: 200px;
+  text-align: center;
+  font-weight: 600;
+  box-shadow: 0 6px 25px rgba(112, 211, 241, 0.4);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.bot-tooltip.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-5px);
+}
+
+.bot-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 8px solid transparent;
+  border-top-color: #70d3f1;
+}
+
+.floating-bot:hover .bot-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-5px);
+}
+
+/* Animación de flotación */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-10px) rotate(1deg);
+  }
+  66% {
+    transform: translateY(5px) rotate(-1deg);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .floating-bot {
+    width: 100px;
+    height: 100px;
+    z-index: 1001; /* Mayor z-index para móvil */
+  }
+  
+  .bot-image {
+    width: 75px;
+    height: 75px;
+  }
+  
+  .close-btn {
+    width: 22px;
+    height: 22px;
+    font-size: 14px;
+    top: -3px;
+    right: -3px;
+  }
+  
+  .bot-tooltip {
+    font-size: 12px;
+    padding: 10px 14px;
+    top: -50px;
+    max-width: 180px;
+  }
+  
+  .bot-tooltip::after {
+    border-width: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .floating-bot {
+    width: 90px;
+    height: 90px;
+    z-index: 1001; /* Asegurar visibilidad en móviles pequeños */
+  }
+  
+  .bot-image {
+    width: 65px;
+    height: 65px;
+  }
+  
+  .close-btn {
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    top: -2px;
+    right: -2px;
+  }
+  
+  .bot-tooltip {
+    font-size: 11px;
+    padding: 8px 12px;
+    max-width: 150px;
+    white-space: normal;
+    text-align: center;
+    top: -45px;
+  }
+  
+  .bot-tooltip::after {
+    border-width: 5px;
+  }
+}
+
+/* Efectos adicionales para una mejor experiencia */
+.floating-bot::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  background: linear-gradient(45deg, #70d3f1, #c2c6fd, #de99ff, #70d3f1);
+  border-radius: 50%;
+  z-index: -1;
+  animation: rotate 4s linear infinite;
+  opacity: 0.8;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Pulso de notificación cuando cambia el mensaje */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 6px 25px rgba(112, 211, 241, 0.4), 0 0 20px rgba(255, 255, 255, 0.8);
+  }
+  50% {
+    box-shadow: 0 6px 25px rgba(112, 211, 241, 0.8), 0 0 30px rgba(255, 255, 255, 1), 0 0 0 15px rgba(112, 211, 241, 0.2);
+  }
+  100% {
+    box-shadow: 0 6px 25px rgba(112, 211, 241, 0.4), 0 0 20px rgba(255, 255, 255, 0.8);
+  }
+}
+
+.floating-bot.new-message {
+  animation: pulse 2s ease-in-out;
+}

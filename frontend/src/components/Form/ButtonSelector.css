@@ -1,0 +1,83 @@
+/* ButtonSelector.css - MAGIC POST Rainbow Design */
+.button-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.selector-button {
+  background: white;
+  color: #2c3e50;
+  border: 1px solid #e1e5e9;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  box-shadow: 0 1px 3px rgba(10, 45, 117, 0.08);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  min-width: 80px;
+}
+
+.selector-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(112, 211, 241, 0.2);
+  border-color: #70d3f1;
+}
+
+.selector-button.active {
+  background: linear-gradient(135deg, #70d3f1 0%, #c2c6fd 50%, #de99ff 100%);
+  color: #0a2d75;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(112, 211, 241, 0.3);
+  border-color: transparent;
+}
+
+.selector-button.active::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.3s ease;
+}
+
+.selector-button.active:hover::before {
+  opacity: 0.05;
+}
+
+.selector-button.active span {
+  font-weight: 700;
+}
+
+.selector-button:focus {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+/* Estilos para botones con iconos */
+.selector-button.has-icon .selector-icon {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+/* Para botones sin iconos, añadir margen superior para centrar mejor el texto */
+.selector-button:not(.has-icon) span {
+  text-align: center;
+}
