@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from fastapi import FastAPI, UploadFile, File, Form
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
@@ -145,7 +146,9 @@ def upload_document(
     file_url = None
 
     if file:
-        temp_path = f"tmp_{file.filename}"
+        temp_dir = Path("backend/tmp_docs")
+        temp_dir.mkdir(parents=True, exist_ok=True)
+        temp_path = temp_dir / file.filename
         with open(temp_path, "wb") as f_out:
             f_out.write(file.file.read())
 
@@ -204,7 +207,9 @@ def index_document(file: UploadFile = File(...)):
     if ext not in allowed_extensions:
         return {"error": f"❌ Tipo de archivo no permitido: {ext}"}
 
-    temp_path = f"tmp_{file.filename}"
+    temp_dir = Path("backend/tmp_docs")
+    temp_dir.mkdir(parents=True, exist_ok=True)
+    temp_path = temp_dir / file.filename
     with open(temp_path, "wb") as f:
         f.write(file.file.read())
 
