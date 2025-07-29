@@ -6,6 +6,10 @@ langsmith
 fastapi
 uvicorn
 supabase
+sentence-transformers
+python-multipart
+feedparser
+pymupdf
 
 # General Requirements
 argparse
