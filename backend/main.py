@@ -160,14 +160,28 @@ def search_content(data: SearchRequest):
 @app.post("/upload_document")
 def upload_document(file: UploadFile = File(...)):
     """
-    Sube e indexa un archivo de texto para consultas semánticas.
+    Sube un documento (.txt, .pdf, .docx, .md), lo convierte a texto
+    y lo indexa en Pinecone para su posterior recuperación semántica.
     """
+    # 1️⃣ Validar la extensión del archivo
+    allowed_extensions = {".txt", ".pdf", ".docx", ".md"}
+    ext = os.path.splitext(file.filename)[1].lower()
+
+    if ext not in allowed_extensions:
+        return {"error": f"❌ Tipo de archivo no permitido: {ext}"}
+
+    # 2️⃣ Guardar temporalmente el archivo
     temp_path = f"tmp_{file.filename}"
     with open(temp_path, "wb") as f:
         f.write(file.file.read())
 
-    ingest_document(temp_path, source_name=file.filename)
-
-    # Limpia el archivo temporal
-    os.remove(temp_path)
-    return {"message": f"Documento {file.filename} indexado correctamente."}
+    try:
+        # 3️⃣ Procesar e indexar el documento
+        ingest_document(temp_path, source_name=file.filename)
+        return {"message": f"✅ Documento {file.filename} indexado correctamente."}
+    except Exception as e:
+        return {"error": f"❌ Error al procesar el archivo: {str(e)}"}
+    finally:
+        # 4️⃣ Eliminar el archivo temporal
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
