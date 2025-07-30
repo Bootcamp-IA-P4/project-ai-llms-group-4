@@ -1,0 +1,55 @@
+langchain-community
+langchain-core
+langchain-text-splitters
+langchain-groq
+langsmith
+fastapi
+uvicorn
+supabase
+sentence-transformers
+python-multipart
+feedparser
+pymupdf
+
+# General Requirements
+argparse
+dotenv
+#Stable Diffusion Model Requirements
+diffusers
+transformers
+accelerate
+safetensors
+
+# Translation Requirements
+langdetect
+deep-translator
+
+# General Requirements
+dotenv
+#Stable Diffusion Model Requirements
+diffusers
+diffusers
+transformers
+accelerate
+safetensors
+
+# Translation Requirements
+langdetect
+deep-translator
+
+# Unsplash Requirements
+keybert
+
+# bbdd Requirements
+langchain
+langchain-pinecone
+langchain-huggingface
+python-dotenv
+pinecone
+
+python-multipart
+# document reader Requirements
+python-docx 
+PyMuPDF 
+markdown
+chardet

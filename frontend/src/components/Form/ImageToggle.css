@@ -1,0 +1,295 @@
+/* ImageToggle.css - MAGIC POST Rainbow Design */
+.image-toggle-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  background-color: rgba(255, 255, 255, 1);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  border: 1px solid rgba(222, 153, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(10, 45, 117, 0.1);
+}
+
+.toggle-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 80px;
+  height: 34px;
+  margin-right: 15px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .3s;
+  border-radius: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+.toggle-on,
+.toggle-off {
+  color: #333333;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  z-index: 1;
+}
+
+.toggle-on {
+  padding-right: 5px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.toggle-off {
+  padding-left: 5px;
+  opacity: 1;
+  transition: opacity 0.3s;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  z-index: 2;
+}
+
+input:checked + .toggle-slider {
+  background: var(--gradient-rainbow);
+}
+
+input:checked + .toggle-slider .toggle-on {
+  opacity: 1;
+}
+
+input:checked + .toggle-slider .toggle-off {
+  opacity: 0;
+}
+
+input:focus + .toggle-slider {
+  box-shadow: 0 0 3px var(--accent-color);
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(46px);
+}
+
+.toggle-label {
+  font-weight: 700;
+  color: var(--dark-color);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
+}
+
+.toggle-icon {
+  width: 24px;
+  height: 24px;
+}
+
+/* Image generation mode selector */
+.image-options {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(222, 153, 255, 0.2);
+}
+
+.image-mode-selector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.image-mode-btn {
+  flex: 1;
+  padding: 12px 20px;
+  border-radius: var(--border-radius);
+  border: 2px solid rgba(112, 211, 241, 0.3);
+  background-color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #0a2d75;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(10, 45, 117, 0.1);
+}
+
+.image-mode-btn:hover {
+  border-color: #70d3f1;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(10, 45, 117, 0.2);
+}
+
+.image-mode-btn.active {
+  background: var(--gradient-rainbow);
+  border-color: #70d3f1;
+  color: #0a2d75;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(112, 211, 241, 0.3);
+}
+
+/* Manual image options - ELIMINADO (ya no se usa) */
+
+/* Manual Image Controls */
+.manual-image-controls {
+  margin-top: 20px;
+  padding: 25px;
+  background: white;
+  border-radius: var(--border-radius);
+  border: 1px solid rgba(112, 211, 241, 0.2);
+  box-shadow: 0 4px 12px rgba(10, 45, 117, 0.1);
+}
+
+.image-fields-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.image-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.image-field.full-width {
+  grid-column: 1 / -1;
+}
+
+.image-field-label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--dark-color);
+  margin-bottom: 10px;
+  text-transform: capitalize;
+}
+
+/* Botones de opciones */
+.image-button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.image-option-btn {
+  background: white;
+  color: #0a2d75;
+  border: 2px solid rgba(112, 211, 241, 0.3);
+  border-radius: var(--border-radius);
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.image-option-btn:hover {
+  border-color: #70d3f1;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(112, 211, 241, 0.2);
+}
+
+.image-option-btn.active {
+  background: var(--gradient-rainbow);
+  border-color: #70d3f1;
+  color: #0a2d75;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(112, 211, 241, 0.3);
+}
+
+/* Input de texto */
+.image-text-input {
+  padding: 12px 15px;
+  border: 2px solid rgba(112, 211, 241, 0.3);
+  border-radius: var(--border-radius);
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.image-text-input:focus {
+  border-color: #70d3f1;
+  box-shadow: 0 0 0 3px rgba(112, 211, 241, 0.2);
+  outline: none;
+}
+
+/* Textarea */
+.image-textarea {
+  padding: 12px 15px;
+  border: 2px solid rgba(112, 211, 241, 0.3);
+  border-radius: var(--border-radius);
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  background: white;
+  resize: vertical;
+  min-height: 80px;
+  font-family: inherit;
+}
+
+.image-textarea:focus {
+  border-color: #70d3f1;
+  box-shadow: 0 0 0 3px rgba(112, 211, 241, 0.2);
+  outline: none;
+}
+
+.image-text-input::placeholder,
+.image-textarea::placeholder {
+  color: #999;
+  font-style: italic;
+}
+
+/* Responsive para los campos manuales */
+@media (max-width: 768px) {
+  .image-fields-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .manual-image-controls {
+    padding: 20px 15px;
+  }
+
+  .image-button-group {
+    gap: 6px;
+  }
+
+  .image-option-btn {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+
+  .image-mode-selector {
+    flex-direction: column;
+    gap: 8px;
+  }
+}

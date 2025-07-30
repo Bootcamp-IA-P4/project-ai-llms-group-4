@@ -1,0 +1,229 @@
+.form-container {
+  background: #fff;
+  border-radius: 22px;
+  box-shadow: 0 8px 32px rgba(10, 45, 117, 0.13);
+  padding: 48px 48px 36px 48px;
+  border: 1.5px solid #e1e5e9;
+  max-width: 1100px;
+  margin: 0 auto 36px auto;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.form-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(90deg, #70d3f1, #c2c6fd, #de99ff);
+}
+
+@media (max-width: 1200px) {
+  .form-container {
+    max-width: 98vw;
+    padding: 32px 4vw 24px 4vw;
+  }
+}
+@media (max-width: 700px) {
+  .form-container {
+    padding: 12px 2vw 8px 2vw;
+    border-radius: 12px;
+  }
+}
+
+.content-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px 40px;
+  margin-bottom: 0;
+}
+@media (max-width: 900px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+}
+
+.form-grid.two-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px 40px;
+  margin-bottom: 28px;
+}
+@media (max-width: 900px) {
+  .form-grid.two-cols {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+}
+
+.form-grid.one-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px 40px;
+  margin-bottom: 28px;
+}
+@media (max-width: 900px) {
+  .form-grid.one-col {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 0;
+  background: none;
+  margin-bottom: 0;
+  padding-bottom: 8px;
+}
+
+/* Agrupa la plataforma y la imagen en una fila visual */
+.platform-image-row {
+  display: flex;
+  gap: 32px;
+  margin: 24px 0 0 0;
+  margin-top: 18px;
+  margin-bottom: 18px;
+}
+@media (max-width: 900px) {
+  .platform-image-row {
+    flex-direction: column;
+    gap: 12px;
+    margin: 16px 0 0 0;
+  }
+}
+.platform-group, .image-generation-container {
+  flex: 1 1 0;
+}
+
+/* Sección de búsqueda/upload más integrada */
+.search-section {
+  margin: 24px 0 0 0;
+  padding: 18px 16px 14px 16px;
+  background: linear-gradient(135deg, rgba(112, 211, 241, 0.07), rgba(222, 153, 255, 0.07));
+  border-radius: 14px;
+  border: 1.5px solid rgba(112, 211, 241, 0.13);
+  box-shadow: 0 2px 8px rgba(10, 45, 117, 0.06);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin-top: 18px;
+}
+@media (max-width: 600px) {
+  .search-section {
+    padding: 8px 2px 6px 2px;
+    border-radius: 8px;
+  }
+}
+
+/* Submit button rainbow grande y centrado */
+.submit-button {
+  background: linear-gradient(90deg, #70d3f1 0%, #c2c6fd 50%, #de99ff 100%);
+  color: #0a2d75;
+  border: none;
+  padding: 18px 44px;
+  border-radius: 28px;
+  font-size: 1.18rem;
+  font-weight: 700;
+  transition: all 0.2s;
+  margin: 38px auto 0 auto;
+  min-width: 260px;
+  box-shadow: 0 2px 14px rgba(10, 45, 117, 0.13);
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.submit-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(13, 37, 89, 0.18);
+}
+@media (max-width: 600px) {
+  .submit-button {
+    min-width: 100%;
+    padding: 14px 0;
+    font-size: 1rem;
+  }
+}
+
+/* Ajusta el input con upload para que sea más aireado */
+.input-with-upload {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+.input-with-upload .form-input {
+  flex: 1;
+}
+
+/* Ajusta tooltips y detalles visuales si es necesario */
+.tooltip-icon {
+  margin-left: 6px;
+  color: #70d3f1;
+  font-size: 0.95em;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.upload-below-input {
+  margin-top: 8px;
+  display: flex;
+  align-items: flex-start;
+}
+
+/* Fix: Visibilidad de texto en inputs y labels */
+.form-label, .form-input, .form-select, input, select, textarea {
+  color: #2c3e50 !important;
+  opacity: 1 !important;
+  background: #fff;
+}
+
+/* Placeholders visibles y elegantes como en MPPro */
+.form-input::placeholder,
+input[type="text"]::placeholder,
+textarea::placeholder {
+  color: #7a869a !important;
+  opacity: 1 !important;
+  font-style: italic;
+  font-size: 1.02em;
+  letter-spacing: 0.01em;
+}
+
+.form-input, input[type="text"], textarea {
+  border: 2px solid #70d3f1;
+  background: #fff;
+  color: #2c3e50;
+  border-radius: 12px;
+  font-size: 1.08rem;
+  font-weight: 500;
+  box-shadow: 0 2px 10px rgba(112, 211, 241, 0.07);
+  margin-bottom: 8px;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+.form-input:focus, input[type="text"]:focus, textarea:focus {
+  border-color: #0a2d75;
+  box-shadow: 0 0 0 3px rgba(10, 45, 117, 0.13);
+}
+
+.form-label {
+  color: #0a2d75 !important;
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 12px;
+  letter-spacing: 0.01em;
+}
