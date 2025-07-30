@@ -30,10 +30,11 @@ export const generateContent = async (formData) => {
       platform: formData.platform,
       company: formData.company,
       tone: formData.tone,
-      language: formData.language === 'Español' ? 'es' : formData.language === 'Inglés' ? 'en' : formData.language === 'Francés' ? 'fr' : 'it',
+      language: formData.language,
       audience: formData.audience,
       img_model: img_model,
-      model: formData.model,
+      model_writer: formData.model_writer,
+      model_research: formData.model_research,
       generate_image: formData.generateImage
     };
 
@@ -61,13 +62,24 @@ export const searchContent = async (query, topK = 3) => {
   }
 };
 
+// Nueva función para obtener posts recientes
+export const getRecentPosts = async (limit = 10) => {
+  try {
+    const response = await api.get(`/recent-posts?limit=${limit}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error obteniendo posts recientes:', error);
+    throw error;
+  }
+};
+
 // Nueva función para subir documentos
 export const uploadDocument = async (file) => {
   try {
     const formData = new FormData();
     formData.append('file', file);
 
-    const response = await api.post('/upload_document', formData, {
+    const response = await api.post('/index_document', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       }

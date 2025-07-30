@@ -19,7 +19,8 @@ const ContentForm = ({ onSubmit, loading }) => {  const [formData, setFormData] 
     tone: '',
     language: '',
     audience: '',
-    model: '',
+    model_writer: '',
+    model_research: '',
     generateImage: true,
     imageMode: '',
   });
@@ -146,9 +147,9 @@ const ContentForm = ({ onSubmit, loading }) => {  const [formData, setFormData] 
             </label>
             <ButtonSelector 
               options={models}
-              selected={formData.model}
+              selected={formData.model_writer}
               onChange={handleChange}
-              name="model"
+              name="model_writer"
             />
           </div>
           <div className="form-group">
