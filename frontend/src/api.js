@@ -62,7 +62,7 @@ export const searchContent = async (query, topK = 3) => {
   }
 };
 
-// ✅ NUEVA FUNCIÓN para obtener posts recientes
+// Función para obtener posts recientes
 export const getRecentPosts = async (limit = 10) => {
   try {
     const response = await api.get(`/recent-posts?limit=${limit}`);
@@ -115,6 +115,38 @@ export const getFinancialNews = async (limit = 10) => {
     return response.data;
   } catch (error) {
     console.error('Error obteniendo noticias financieras:', error);
+    throw error;
+  }
+};
+
+// FUNCIONES PARA ARXIV (MP PRO)
+export const ingestArxivPapers = async (topic, maxPapers = 3) => {
+  try {
+    const requestData = {
+      topic: topic,
+      max_papers: maxPapers
+    };
+
+    console.log('🔬 Ingesting ArXiv papers:', requestData);
+    const response = await api.post('/arxiv_ingest', requestData);
+    return response.data;
+  } catch (error) {
+    console.error('Error ingesting ArXiv papers:', error);
+    throw error;
+  }
+};
+
+export const queryArxivContent = async (question) => {
+  try {
+    const requestData = {
+      question: question
+    };
+
+    console.log('🔍 Querying ArXiv content:', requestData);
+    const response = await api.post('/arxiv_query', requestData);
+    return response.data;
+  } catch (error) {
+    console.error('Error querying ArXiv content:', error);
     throw error;
   }
 };

@@ -12,7 +12,7 @@ const SearchButton = ({ onContentSelect }) => {
   const [previousPosts, setPreviousPosts] = useState([]);
   const [loadingPrevious, setLoadingPrevious] = useState(false);
   
-  // ✅ NUEVO: Estados para feedback visual
+  // Estados para feedback visual
   const [selectedPosts, setSelectedPosts] = useState([]);
   const [feedbackMessage, setFeedbackMessage] = useState('');
 
@@ -37,8 +37,8 @@ const SearchButton = ({ onContentSelect }) => {
     }
   }, [isExpanded]);
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
+  // Función sin preventDefault (ya no es un form)
+  const handleSearch = async () => {
     if (!searchQuery.trim()) return;
 
     setSearchLoading(true);
@@ -53,7 +53,15 @@ const SearchButton = ({ onContentSelect }) => {
     }
   };
 
-  // ✅ MEJORADO: Función con feedback visual
+  // Manejar Enter en el input
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSearch();
+    }
+  };
+
+  // Función con feedback visual
   const handleSelectContent = (content) => {
     const contentText = content.content || content.text || content;
     
@@ -61,7 +69,7 @@ const SearchButton = ({ onContentSelect }) => {
       onContentSelect(contentText);
     }
     
-    // ✅ Agregar a la lista de seleccionados
+    // Agregar a la lista de seleccionados
     const truncatedText = contentText.length > 50 
       ? contentText.substring(0, 50) + '...' 
       : contentText;
@@ -69,13 +77,10 @@ const SearchButton = ({ onContentSelect }) => {
     setSelectedPosts(prev => [...prev, truncatedText]);
     setFeedbackMessage('✅ Contenido cargado como inspiración');
     
-    // ✅ Auto-limpiar mensaje después de 3 segundos
+    // Auto-limpiar mensaje después de 3 segundos
     setTimeout(() => {
       setFeedbackMessage('');
     }, 3000);
-    
-    // ✅ NO cerrar inmediatamente, permitir selecciones múltiples
-    // setIsExpanded(false); // Comentado para permitir múltiples selecciones
   };
 
   const clearSearch = () => {
@@ -83,7 +88,7 @@ const SearchButton = ({ onContentSelect }) => {
     setSearchResults([]);
   };
 
-  // ✅ NUEVO: Función para cerrar y limpiar todo
+  // Función para cerrar y limpiar todo
   const handleClose = () => {
     setIsExpanded(false);
     setFeedbackMessage('');
@@ -105,7 +110,7 @@ const SearchButton = ({ onContentSelect }) => {
         {searchLoading && <span className="loading-spinner">⏳</span>}
       </button>
 
-      {/* ✅ NUEVO: Lista de posts seleccionados */}
+      {/* Lista de posts seleccionados */}
       {selectedPosts.length > 0 && (
         <div className="selected-posts-list">
           <h5>Posts usados como inspiración:</h5>
@@ -137,20 +142,23 @@ const SearchButton = ({ onContentSelect }) => {
               </button>
             </div>
             
-            <form onSubmit={handleSearch} className="search-form">
+            {/* ✅ CAMBIO: div en lugar de form */}
+            <div className="search-form">
               <div className="search-input-group">
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={handleKeyPress} 
                   placeholder="Buscar por tema, palabras clave..."
                   className="search-input"
                   disabled={searchLoading}
                 />
                 <div className="search-buttons">
                   <button 
-                    type="submit" 
+                    type="button" 
                     className="search-btn rainbow-btn"
+                    onClick={handleSearch} 
                     disabled={searchLoading || !searchQuery.trim()}
                   >
                     <img src={RainbowSearchIcon} alt="Buscar" className="search-icon-svg" />
@@ -166,9 +174,9 @@ const SearchButton = ({ onContentSelect }) => {
                   )}
                 </div>
               </div>
-            </form>
+            </div>
 
-            {/* ✅ NUEVO: Mensaje de feedback */}
+            {/* Mensaje de feedback */}
             {feedbackMessage && (
               <div className="feedback-message success">
                 {feedbackMessage}
@@ -215,14 +223,14 @@ const SearchButton = ({ onContentSelect }) => {
               {loadingPrevious && <div className="loading-news">Cargando publicaciones...</div>}
             </div>
 
-            {/* ✅ NUEVO: Botón para cerrar con confirmación */}
+            {/* Botón para cerrar con confirmación */}
             <div className="search-actions">
               <button 
                 type="button" 
                 className="close-search-btn rainbow-btn"
                 onClick={handleClose}
               >
-                {selectedPosts.length > 0 ? `✅ Usar ${selectedPosts.length} post(s) como inspiración` : '🚪 Cerrar'}
+                {selectedPosts.length > 0 ? `Usar ${selectedPosts.length} post(s) como inspiración` : '🚪 Cerrar'}
               </button>
             </div>
           </motion.div>
