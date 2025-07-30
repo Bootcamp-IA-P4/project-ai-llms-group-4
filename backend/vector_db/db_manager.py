@@ -5,6 +5,8 @@ from langchain_pinecone import Pinecone as PineconeVectorStore
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from pathlib import Path
 from .document_reader import extract_text_from_file
+from langsmith import traceable
+
 
 # Cargamos las variables de entorno
 load_dotenv()
@@ -59,6 +61,7 @@ def search_similar(query, top_k=3):
     results = vector_db.similarity_search_with_score(query, k=top_k)
     return results
 
+@traceable(name="Indexación de documento en Pinecone")
 def ingest_document(file_path: str, source_name: str = None):
     """
     Dividimos el documento en fragmentos y los guardamos en Pinecone con metadatos.

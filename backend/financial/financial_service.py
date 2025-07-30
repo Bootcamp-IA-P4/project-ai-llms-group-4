@@ -16,8 +16,6 @@ def generate_financial_news(request: FinancialNewsRequest) -> Dict[str, Any]:
     3. Formatea los datos para el LLM
     4. Genera la noticia financiera profesional
     5. Devuelve todo estructurado
-    
-    Es el "director de orquesta" que coordina todos los demás archivos.
     """
     
     try:
@@ -39,9 +37,9 @@ def generate_financial_news(request: FinancialNewsRequest) -> Dict[str, Any]:
         # 4. Estructurar respuesta final
         response_data = {
             "news_content": generated_news,
-            "symbol": symbol,
+            "symbol": symbol if symbol != "UNKNOWN" else None,
             "market_data": {
-                "symbol": symbol,
+                "symbol": symbol if symbol != "UNKNOWN" else None,
                 "company_name": company_name,
                 "success": stock_data.get("success", False),
                 "timestamp": stock_data.get("timestamp", datetime.now().isoformat()),
@@ -158,9 +156,9 @@ Queste informazioni sono solo educative, non costituiscono consigli di investime
     
     response_data = {
         "news_content": fallback_news,
-        "symbol": "UNKNOWN",
+        "symbol": None,
         "market_data": {
-            "symbol": "UNKNOWN",
+            "symbol": None,
             "company_name": request.company,
             "success": False,
             "timestamp": datetime.now().isoformat(),

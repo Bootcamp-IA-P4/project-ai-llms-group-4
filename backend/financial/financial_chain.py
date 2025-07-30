@@ -150,78 +150,26 @@ def generate_financial_news(topic: str, language: str, market_data: str) -> str:
     - El topic del usuario
     
     Y lo envía todo estructurado a Groq para generar una noticia profesional.
+    
+    CAMBIO: Ya no tiene fallback - si falla, lanza excepción para que 
+    financial_service.py maneje con su fallback único.
     """
-    try:
-        # Obtener instrucciones específicas de idioma
-        language_instruction = get_language_instruction(language)
-        
-        # Ejecutar el chain de LangChain
-        result = financial_news_chain.invoke({
-            "language_instruction": language_instruction,
-            "market_data": market_data,
-            "topic": topic
-        }, config={
-            "tags": ["financial-news", "groq-llm"],
-            "metadata": {
-                "service": "financial-news",
-                "language": language,
-                "topic": topic
-            }
-        })
-        
-        # Extraer el contenido del resultado
-        if hasattr(result, 'content'):
-            raw_content = result.content
-        else:
-            raw_content = str(result)
-        
-        # Limpiar la respuesta del LLM
-        clean_content = clean_llm_response(raw_content)
-        return clean_content
-        
-    except Exception as e:
-        # Fallback: noticia básica si falla Groq
-        fallback_templates = {
-            "Español": f"""
-Noticia Financiera: {topic}
-
-Los datos del mercado no están disponibles en este momento para proporcionar información específica sobre esta consulta financiera.
-
-Se recomienda a los inversores mantenerse informados a través de fuentes oficiales y consultar con asesores financieros profesionales antes de tomar decisiones de inversión.
-
-Esta información es solo educativa, no constituye consejo de inversión.
-            """,
-            
-            "Inglés": f"""
-Financial News: {topic}
-
-Market data is currently unavailable to provide specific information about this financial query.
-
-Investors are advised to stay informed through official sources and consult with professional financial advisors before making investment decisions.
-
-This information is for educational purposes only, not investment advice.
-            """,
-            
-            "Francés": f"""
-Actualité Financière: {topic}
-
-Les données de marché ne sont actuellement pas disponibles pour fournir des informations spécifiques sur cette requête financière.
-
-Il est conseillé aux investisseurs de rester informés par des sources officielles et de consulter des conseillers financiers professionnels avant de prendre des décisions d'investissement.
-
-Cette information est à des fins éducatives uniquement, pas des conseils en investissement.
-            """,
-            
-            "Italiano": f"""
-Notizia Finanziaria: {topic}
-
-I dati di mercato non sono attualmente disponibili per fornire informazioni specifiche su questa richiesta finanziaria.
-
-Si consiglia agli investitori di rimanere informati attraverso fonti ufficiali e di consultare consulenti finanziari professionali prima di prendere decisioni di investimento.
-
-Queste informazioni sono solo educative, non costituiscono consigli di investimento.
-            """
-        }
-        
-        fallback_content = fallback_templates.get(language, fallback_templates["Español"])
-        return fallback_content.strip()
+    # Obtener instrucciones específicas de idioma
+    language_instruction = get_language_instruction(language)
+    
+    # Ejecutar el chain de LangChain (sin try-catch)
+    result = financial_news_chain.invoke({
+        "language_instruction": language_instruction,
+        "market_data": market_data,
+        "topic": topic
+    })
+    
+    # Extraer el contenido del resultado
+    if hasattr(result, 'content'):
+        raw_content = result.content
+    else:
+        raw_content = str(result)
+    
+    # Limpiar la respuesta del LLM
+    clean_content = clean_llm_response(raw_content)
+    return clean_content
