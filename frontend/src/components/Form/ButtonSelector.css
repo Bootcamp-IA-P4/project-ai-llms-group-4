@@ -34,6 +34,14 @@
   border-color: #70d3f1;
 }
 
+.selector-button.active, .selector-button.selected {
+  background: linear-gradient(90deg, #70d3f1 0%, #c2c6fd 50%, #de99ff 100%);
+  color: #0a2d75;
+  font-weight: 700;
+  border: none;
+  box-shadow: 0 2px 8px rgba(112, 211, 241, 0.13);
+}
+
 .selector-button.active {
   background: linear-gradient(135deg, #70d3f1 0%, #c2c6fd 50%, #de99ff 100%);
   color: #0a2d75;
@@ -80,4 +88,27 @@
 /* Para botones sin iconos, añadir margen superior para centrar mejor el texto */
 .selector-button:not(.has-icon) span {
   text-align: center;
+}
+
+/* Compact size adjustments */
+.selector-button {
+  min-width: 90px;
+  min-height: 36px;
+  font-size: 0.95rem;
+  padding: 8px 14px;
+  border-radius: 25px;
+  border: 1px solid #e1e5e9;
+  background: #fff;
+  color: #2c3e50;
+  font-weight: 600;
+  transition: all 0.2s;
+  margin-right: 8px;
+  margin-bottom: 4px;
+  cursor: pointer;
+}
+
+.selector-button:hover:not(.active):not(.selected) {
+  background: #f0f6ff;
+  color: #0a2d75;
+  border-color: #70d3f1;
 }

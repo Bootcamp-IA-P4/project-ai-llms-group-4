@@ -14,7 +14,7 @@ const Home = () => {
         >
           <h1 className="main-title" id="main-title" data-text="MAGIC POST GENERATOR">
             <span className="visually-hidden">MAGIC POST GENERATOR - Generador de Contenidos con IA</span>
-            <span aria-hidden="true">MAGIC POST GENERATOR</span>
+            <span aria-hidden="true">MAGIC POST </span>
           </h1>
           <p className="main-description" id="main-description">
             La herramienta de IA más avanzada para crear contenido optimizado para redes sociales y plataformas digitales
@@ -28,7 +28,7 @@ const Home = () => {
           transition={{ duration: 0.8, delay: 0.2 }}
         >
           <div className="intro-content">
-            <h2>¿Qué hace Magic Post Generator?</h2>
+            <h2>¿Qué hace Magic Post?</h2>
             <div className="features-grid">
               <div className="feature-card">
                 <div className="feature-icon">🎯</div>

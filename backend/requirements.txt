@@ -47,6 +47,7 @@ langchain-huggingface
 python-dotenv
 pinecone
 
+python-multipart
 # document reader Requirements
 python-docx 
 PyMuPDF 

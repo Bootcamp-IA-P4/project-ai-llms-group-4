@@ -156,6 +156,29 @@ def search_content(data: SearchRequest):
     ]
     return {"results": output}
 
+# ✅ NUEVO ENDPOINT PARA POSTS RECIENTES
+@app.get("/recent-posts")
+def get_recent_posts(limit: int = 10):
+    """
+    Obtiene los posts más recientes de la base vectorial
+    """
+    try:
+        # Buscar con query general para obtener posts recientes
+        results = search_similar("contenido", top_k=limit)
+        output = [
+            {
+                "text": doc.page_content,
+                "content": doc.page_content,  # Agregar alias para compatibilidad
+                "metadata": doc.metadata,
+                "similarity_score": round(score, 3)
+            }
+            for doc, score in results
+        ]
+        return {"results": output}
+    except Exception as e:
+        print(f"❌ Error obteniendo posts recientes: {e}")
+        return {"error": str(e), "results": []}
+
 @app.post("/upload_document")
 def upload_document(
     topic: str = Form(...),

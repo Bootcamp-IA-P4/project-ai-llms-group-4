@@ -17,7 +17,7 @@ const Generate = () => {
       const data = await generateContent(formData);
       
       setContentResult(data.text);
-      setImageUrl(data.image);
+      setImageUrl(data.image_url);
       setPromptUsed('Prompt generado por IA');
     } catch (error) {
       console.error('Error al generar contenido:', error);

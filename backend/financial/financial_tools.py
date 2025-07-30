@@ -141,7 +141,23 @@ def format_market_data_for_llm(stock_data: dict) -> str:
 
     # Caso 1: Sin datos disponibles
     if not stock_data.get("success", False):
-        return f"""
+        if symbol == "UNKNOWN":
+            # No mencionar símbolo si no se encontró
+            return f"""
+DATOS FINANCIEROS DE {company_name.upper()}:
+
+Estado: Datos de precios no disponibles
+Empresa: {company_name}
+Símbolo: No encontrado en bases de datos financieras
+
+Nota: Genera análisis general sobre {company_name} sin mencionar símbolos específicos ni precios.
+Enfócate en información corporativa, sector, tendencias del mercado y contexto general de la empresa.
+
+Motivo: {stock_data.get('error', 'Datos no disponibles')}
+            """.strip()
+        else:
+            # Símbolo encontrado pero sin datos de mercado
+            return f"""
 DATOS FINANCIEROS DE {symbol}:
 
 Estado: Datos de precios no disponibles
@@ -152,7 +168,7 @@ Nota: Genera análisis general sobre {company_name} ({symbol}) sin mencionar pre
 Enfócate en información corporativa, sector, tendencias del mercado y contexto general de la empresa.
 
 Motivo: {stock_data.get('error', 'Datos no disponibles')}
-        """.strip()
+            """.strip()
 
     # Caso 2: Datos de Polygon disponibles
     raw_data = stock_data.get("raw_data", {})

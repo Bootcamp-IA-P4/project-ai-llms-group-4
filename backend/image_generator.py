@@ -6,6 +6,7 @@ import base64
 from img_gen.main import generate_post_image
 from pathlib import Path
 import time
+from langsmith import traceable
 
 # Cargar .env desde la raíz del proyecto
 env_path = Path(__file__).resolve().parents[1] / ".env"
@@ -22,6 +23,7 @@ headers = {
 
 from pathlib import Path
 
+@traceable(name="Generación de url de imagen")
 def generate_image_url(text, model):
     try:
         print("Calling generate_post_image def...")

@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { generateFinancialNews, getFinancialNews } from '../api';
-import ButtonSelector from '../components/Form/ButtonSelector';
 import './FinancePage.css';
+import ButtonSelector from '../components/Form/ButtonSelector';
 
 const FinancePage = () => {
   const [formData, setFormData] = useState({
-    topic: 'acciones',
-    company: 'nike',
-    language: 'Español'
+    topic: '',
+    company: '',
+    language: ''
   });
   
   const [newsResult, setNewsResult] = useState(null);
@@ -17,7 +17,6 @@ const FinancePage = () => {
   const [loadingNews, setLoadingNews] = useState(false);
   const [error, setError] = useState(null);
 
-  const topics = ['acciones', 'criptomonedas', 'mercados', 'bonos', 'divisas', 'commodities'];
   const languages = ['Español', 'Inglés', 'Francés', 'Italiano'];
 
   useEffect(() => {
@@ -91,11 +90,15 @@ const FinancePage = () => {
               <div className="form-grid">
                 <div className="form-group">
                   <label htmlFor="topic" className="form-label">Tema financiero</label>
-                  <ButtonSelector
-                    options={topics}
-                    selected={formData.topic}
-                    onChange={handleChange}
+                  <input
+                    type="text"
+                    id="topic"
                     name="topic"
+                    value={formData.topic}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Ej: acciones, criptomonedas, inflación, resultados trimestrales, fusiones, bonos verdes, mercados emergentes"
+                    required
                   />
                 </div>
                 <div className="form-group">
@@ -107,7 +110,7 @@ const FinancePage = () => {
                     value={formData.company}
                     onChange={handleChange}
                     className="form-input"
-                    placeholder="Ej: nike, apple, tesla"
+                    placeholder="Ej: Nike, Apple, Tesla, Amazon, BBVA, Santander, Mercado Libre, Petrobras"
                     required
                   />
                 </div>
@@ -159,6 +162,16 @@ const FinancePage = () => {
                     {new Date(newsResult.timestamp).toLocaleString()}
                   </span>
                 </div>
+                {/* Mostrar imagen si existe */}
+                {newsResult.image_url && (
+                  <div className="news-image">
+                    <img
+                      src={`http://localhost:8000${newsResult.image_url}`}
+                      alt="Imagen generada"
+                      style={{ maxWidth: '100%', borderRadius: '12px', margin: '16px 0' }}
+                    />
+                  </div>
+                )}
                 <div className="news-body">
                   {newsResult.news_content?.split('\n').map((paragraph, index) => (
                     paragraph ? <p key={index}>{paragraph}</p> : <br key={index} />

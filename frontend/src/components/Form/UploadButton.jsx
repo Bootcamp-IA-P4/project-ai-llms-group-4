@@ -9,6 +9,7 @@ const UploadButton = () => {
   const [uploadLoading, setUploadLoading] = useState(false);
   const [uploadMessage, setUploadMessage] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -24,8 +25,7 @@ const UploadButton = () => {
     }
   };
 
-  const handleUpload = async (e) => {
-    e.preventDefault();
+  const handleUpload = async () => {
     if (!uploadFile) return;
 
     setUploadLoading(true);
@@ -34,6 +34,10 @@ const UploadButton = () => {
     try {
       const result = await uploadDocument(uploadFile);
       setUploadMessage('✅ Documento subido exitosamente');
+      
+      // Agregar archivo a la lista de subidos
+      setUploadedFiles(prev => [...prev, uploadFile.name]);
+      
       setUploadFile(null);
       // Reset file input
       const fileInput = document.getElementById('document-upload');
@@ -67,6 +71,17 @@ const UploadButton = () => {
         {uploadLoading && <span className="loading-spinner">⏳</span>}
       </button>
 
+      {uploadedFiles.length > 0 && (
+        <div className="uploaded-files-list">
+          <h5>Documentos subidos:</h5>
+          {uploadedFiles.map((fileName, index) => (
+            <div key={index} className="uploaded-file-item">
+              📄 {fileName}
+            </div>
+          ))}
+        </div>
+      )}
+
       {isExpanded && (
         <div className="upload-modal-centered">
           <motion.div 
@@ -86,7 +101,7 @@ const UploadButton = () => {
                 ×
               </button>
             </div>
-            <form onSubmit={handleUpload} className="upload-form">
+            <div className="upload-form">
               <div className="upload-input-group">
                 <input
                   type="file"
@@ -101,15 +116,16 @@ const UploadButton = () => {
                 </label>
                 {uploadFile && (
                   <button 
-                    type="submit" 
+                    type="button" 
                     className="submit-upload-btn rainbow-btn"
                     disabled={uploadLoading}
+                    onClick={handleUpload}
                   >
                     {uploadLoading ? '⏳ Subiendo...' : '📤 Subir'}
                   </button>
                 )}
               </div>
-            </form>
+            </div>
             {uploadMessage && (
               <div className={`upload-message ${uploadMessage.includes('✅') ? 'success' : 'error'}`}>
                 {uploadMessage}

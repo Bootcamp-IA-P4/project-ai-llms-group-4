@@ -40,8 +40,16 @@ const ContentResult = ({ content, prompt, imageUrl }) => {
         <div className="result-section">
           <h3>Imagen generada</h3>
           <div className="image-container">
-            <img src={imageUrl} alt="Imagen generada con IA" className="generated-image" />
-            <a href={imageUrl} download="ai-generated-image.jpg" className="download-button">
+            <img 
+              src={imageUrl.startsWith('http') ? imageUrl : `http://localhost:8000${imageUrl}`}
+              alt="Imagen generada con IA" 
+              className="generated-image" 
+            />
+            <a 
+              href={imageUrl.startsWith('http') ? imageUrl : `http://localhost:8000${imageUrl}`}
+              download="ai-generated-image.jpg" 
+              className="download-button"
+            >
               Descargar imagen
             </a>
           </div>

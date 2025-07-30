@@ -20,15 +20,21 @@ api.interceptors.response.use(
 
 export const generateContent = async (formData) => {
   try {
+    // Si se solicita imagen, forzar modelo 'remote:all' para máxima compatibilidad
+    let img_model = formData.img_model;
+    if (formData.generateImage) {
+      img_model = 'remote:all';
+    }
     const requestData = {
       topic: formData.topic,
       platform: formData.platform,
       company: formData.company,
       tone: formData.tone,
-      language: formData.language === 'Español' ? 'es' : formData.language === 'Inglés' ? 'en' : formData.language === 'Francés' ? 'fr' : 'it',
+      language: formData.language,
       audience: formData.audience,
-      img_model: 'remote',
-      model: formData.model,
+      img_model: img_model,
+      model_writer: formData.model_writer,
+      model_research: formData.model_research,
       generate_image: formData.generateImage
     };
 
@@ -49,9 +55,20 @@ export const searchContent = async (query, topK = 3) => {
     };
 
     const response = await api.post('/search', requestData);
-    return response.data;
+    return response.data.results || [];
   } catch (error) {
     console.error('Error en búsqueda:', error);
+    throw error;
+  }
+};
+
+// Función para obtener posts recientes
+export const getRecentPosts = async (limit = 10) => {
+  try {
+    const response = await api.get(`/recent-posts?limit=${limit}`);
+    return response.data.results || [];
+  } catch (error) {
+    console.error('Error obteniendo posts recientes:', error);
     throw error;
   }
 };
@@ -62,7 +79,7 @@ export const uploadDocument = async (file) => {
     const formData = new FormData();
     formData.append('file', file);
 
-    const response = await api.post('/upload_document', formData, {
+    const response = await api.post('/index_document', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       }
@@ -98,6 +115,38 @@ export const getFinancialNews = async (limit = 10) => {
     return response.data;
   } catch (error) {
     console.error('Error obteniendo noticias financieras:', error);
+    throw error;
+  }
+};
+
+// FUNCIONES PARA ARXIV (MP PRO)
+export const ingestArxivPapers = async (topic, maxPapers = 3) => {
+  try {
+    const requestData = {
+      topic: topic,
+      max_papers: maxPapers
+    };
+
+    console.log('🔬 Ingesting ArXiv papers:', requestData);
+    const response = await api.post('/arxiv_ingest', requestData);
+    return response.data;
+  } catch (error) {
+    console.error('Error ingesting ArXiv papers:', error);
+    throw error;
+  }
+};
+
+export const queryArxivContent = async (question) => {
+  try {
+    const requestData = {
+      question: question
+    };
+
+    console.log('🔍 Querying ArXiv content:', requestData);
+    const response = await api.post('/arxiv_query', requestData);
+    return response.data;
+  } catch (error) {
+    console.error('Error querying ArXiv content:', error);
     throw error;
   }
 };
