@@ -16,6 +16,8 @@ from backend.vector_db.document_reader import extract_text_from_file
 from backend.database.supabase_logger import log_post_to_supabase
 from backend.database.storage import upload_image_to_supabase
 from backend.database.storage import upload_document_to_supabase
+from backend.database.supabase_logger import log_post_to_supabase
+from backend.database.storage import upload_image_to_supabase
 
 app = FastAPI()
 
@@ -85,6 +87,14 @@ def generate_content(data: ContentRequest):
         audience=data.audience
     )
 
+
+    # 2️⃣ (Opcional) Generar imagen
+    image_url = None
+    if data.generate_image:
+        image_url = image_agent(text, data.img_model)
+
+    # 3️⃣ Guardar en Pinecone (vectorial)
+        # 2️⃣ (Opcional) Generar imagen
     image_url = None
     if data.generate_image:
         image_path = generate_image_url(text, data.img_model)
@@ -113,6 +123,8 @@ def generate_content(data: ContentRequest):
         image_url=image_url
     )
 
+    # 4️⃣ Devolver resultado
+    # 5️⃣ Guardar en Supabase (relacional)
     log_post_to_supabase({
         "prompt": prompt_used,
         "text": text,
@@ -125,6 +137,7 @@ def generate_content(data: ContentRequest):
         "image_url": image_url
     })
 
+    # 6️⃣ Devolver al frontend
     return {
         "text": text,
         "image_url": image_url

@@ -18,6 +18,7 @@ def generate_text_with_context(
     context = research_agent(topic, company, model=model_research)
     text, prompt = writing_agent(topic, platform, tone, company, language, audience, context, model=model_writer)
     return text, prompt
+
 def get_language_instruction(language):
     """
     Devuelve la instrucción de idioma apropiada para el LLM.
