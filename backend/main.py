@@ -33,7 +33,7 @@ class ContentRequest(BaseModel):
     tone: str
     language: str
     audience: Optional[str] = None
-    img_model: Optional[str] = "stability"
+    img_model: Optional[str] = "remote:all"
     model: str
     generate_image: bool = True
 
@@ -137,7 +137,7 @@ def upload_document(
     tone: str = Form(...),
     language: str = Form(...),
     model: str = Form(...),
-    img_model: str = Form("stability"),
+    img_model: str = Form("remote:all"),
     audience: str = Form(None),
     company: str = Form(None),
     file: Optional[UploadFile] = File(None)
