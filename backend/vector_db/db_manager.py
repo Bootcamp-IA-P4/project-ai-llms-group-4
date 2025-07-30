@@ -6,11 +6,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from pathlib import Path
 
 # Cargamos las variables de entorno
-<<<<<<< HEAD
 load_dotenv()
-=======
-load_dotenv(dotenv_path=Path(__file__).resolve().parents[2] / ".env")
->>>>>>> 60854b17b1d96cc4332752e3759080cbcb67f7f8
 
 # Inicializamos el modelo de embeddings que convertirá texto en vectores numéricos
 embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")

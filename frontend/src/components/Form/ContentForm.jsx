@@ -13,15 +13,15 @@ import instagramIcon from '../../assets/images/instagram.svg';
 import blogIcon from '../../assets/images/blog.svg';
 
 const ContentForm = ({ onSubmit, loading }) => {  const [formData, setFormData] = useState({
-    topic: 'contenido para ingenieros',
-    platform: 'Instagram',
-    company: 'Círculo Creativo',
-    tone: 'inspirador',
-    language: 'Español',
-    audience: 'jóvenes diseñadores',
-    model: 'mistralai/mistral-7b-instruct',
-    generateImage: false,  // Cambié a false
-    imageMode: 'remote',
+    topic: '',
+    platform: '',
+    company: '',
+    tone: '',
+    language: '',
+    audience: '',
+    model: '',
+    generateImage: true,
+    imageMode: '',
   });
 
   const handleChange = (e) => {
@@ -75,7 +75,7 @@ const ContentForm = ({ onSubmit, loading }) => {  const [formData, setFormData] 
           aria-labelledby="main-title" 
           aria-describedby="main-description"
         >
-        <div className="form-grid" role="group">
+        <div className="form-grid two-cols" role="group">
           {/* Primera fila: Tema y Marca/Empresa */}
           <div className="form-group">
             <label htmlFor="topic" className="form-label">
@@ -89,6 +89,7 @@ const ContentForm = ({ onSubmit, loading }) => {  const [formData, setFormData] 
               value={formData.topic}
               onChange={handleChange}
               className="form-input"
+              placeholder="Ej: Consejos para ingenieros, marketing digital, ideas para Instagram, etc."
               required
             />
             <div className="upload-below-input">
@@ -97,7 +98,7 @@ const ContentForm = ({ onSubmit, loading }) => {  const [formData, setFormData] 
           </div>
           <div className="form-group">
             <label htmlFor="company" className="form-label">
-              Marca o empresa (opcional)
+              Marca o empresa
               <span className="tooltip-icon" data-tooltip-id="tooltip-component" data-tooltip-content="Nombre de tu empresa para personalizar el contenido">i</span>
             </label>
             <input
@@ -107,7 +108,7 @@ const ContentForm = ({ onSubmit, loading }) => {  const [formData, setFormData] 
               value={formData.company}
               onChange={handleChange}
               className="form-input"
-              placeholder="Nombre de tu empresa"
+              placeholder="Ej: Círculo Creativo, Nike, Apple, etc."
             />
           </div>
           {/* Segunda fila: Idioma y Tono */}
@@ -135,7 +136,9 @@ const ContentForm = ({ onSubmit, loading }) => {  const [formData, setFormData] 
               name="tone"
             />
           </div>
-          {/* Tercera fila: Modelo y Audiencia */}
+        </div>
+        {/* Tercera fila: Modelo y Audiencia en una sola columna */}
+        <div className="form-grid one-col">
           <div className="form-group">
             <label className="form-label">
               Modelo LLM
@@ -150,7 +153,7 @@ const ContentForm = ({ onSubmit, loading }) => {  const [formData, setFormData] 
           </div>
           <div className="form-group">
             <label htmlFor="audience" className="form-label">
-              Audiencia objetivo (opcional)
+              Audiencia objetivo 
               <span className="tooltip-icon" data-tooltip-id="tooltip-component" data-tooltip-content="Describe el público al que va dirigido el contenido">i</span>
             </label>
             <input
@@ -160,7 +163,7 @@ const ContentForm = ({ onSubmit, loading }) => {  const [formData, setFormData] 
               value={formData.audience}
               onChange={handleChange}
               className="form-input"
-              placeholder="Ej: Profesionales de marketing, estudiantes, etc."
+              placeholder="Ej: Profesionales de marketing, estudiantes, ingenieros, etc."
             />
           </div>
         </div>
@@ -180,13 +183,10 @@ const ContentForm = ({ onSubmit, loading }) => {  const [formData, setFormData] 
           </div>
           <div className="form-group image-generation-container">
             <ImageToggle
-              isChecked={formData.generateImage}
-              onChange={(e) => handleChange({
-                target: {
-                  name: 'generateImage',
-                  type: 'checkbox',
-                  checked: e.target.checked
-                }
+              isChecked={!!formData.generateImage}
+              onChange={e => setFormData({
+                ...formData,
+                generateImage: e.target.checked
               })}
               onModeChange={handleImageModeChange}
             />

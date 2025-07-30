@@ -137,6 +137,17 @@
   padding: 20px;
 }
 
+/* Placeholders visibles y elegantes como en el resto de la app */
+.form-input::placeholder,
+input::placeholder,
+textarea::placeholder {
+  color: #7a869a;
+  opacity: 1;
+  font-style: italic;
+  font-size: 0.98em;
+  letter-spacing: 0.01em;
+}
+
 /* Grid Layouts */
 .complexity-grid,
 .audience-grid,
