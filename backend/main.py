@@ -34,6 +34,7 @@ class ContentRequest(BaseModel):
     language: str
     audience: Optional[str] = None
     img_model: Optional[str] = "remote:all"
+    img_model: Optional[str] = "remote:all"
     model: str
     generate_image: bool = True
 
