@@ -4,8 +4,9 @@ from dotenv import load_dotenv
 from pathlib import Path
 
 # Cargar las variables de entorno desde el archivo .env
-load_dotenv(dotenv_path=Path(__file__).resolve().parents[2] / '.env')
-
+env_path = Path(__file__).resolve().parents[2] / ".env"
+if env_path.exists():
+    load_dotenv(dotenv_path=env_path)
 class SupabaseClient:
     """
     Cliente singleton para Supabase.

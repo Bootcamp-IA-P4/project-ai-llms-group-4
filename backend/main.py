@@ -4,19 +4,19 @@ from fastapi import FastAPI, UploadFile, File, Form
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 from fastapi.middleware.cors import CORSMiddleware
-from .generate_with_rag import generate_text_with_context
-from .image_generator import generate_image_url
-from backend.financial.models import FinancialNewsRequest
-from backend.financial.financial_service import generate_financial_news
-from backend.vector_db.db_manager import save_post, search_similar, ingest_document
+from generate_with_rag import generate_text_with_context
+from image_generator import generate_image_url
+from financial.models import FinancialNewsRequest
+from financial.financial_service import generate_financial_news
+from vector_db.db_manager import save_post, search_similar, ingest_document
 from fastapi import Body
-from backend.cience_data.arxiv import search_arxiv, download_and_extract, ingest_arxiv_documents, create_arxiv_rag_chain
-from backend.vector_db.document_reader import extract_text_from_file
-from backend.database.supabase_logger import log_post_to_supabase
-from backend.database.storage import upload_image_to_supabase
-from backend.database.storage import upload_document_to_supabase
-from backend.database.supabase_logger import log_post_to_supabase
-from backend.database.storage import upload_image_to_supabase
+from cience_data.arxiv import search_arxiv, download_and_extract, ingest_arxiv_documents, create_arxiv_rag_chain
+from vector_db.document_reader import extract_text_from_file
+from database.supabase_logger import log_post_to_supabase
+from database.storage import upload_image_to_supabase
+from database.storage import upload_document_to_supabase
+from database.supabase_logger import log_post_to_supabase
+from database.storage import upload_image_to_supabase
 
 app = FastAPI()
 
@@ -140,7 +140,7 @@ def financial_news_endpoint(data: FinancialNewsRequest):
 
 @app.get("/financial-news")
 def get_financial_news_endpoint(limit: int = 10):
-    from backend.database.repository import get_recent_financial_news
+    from database.repository import get_recent_financial_news
     return get_recent_financial_news(limit)
 
 @app.post("/search")

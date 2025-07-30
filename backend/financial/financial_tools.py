@@ -7,7 +7,10 @@ from langchain_community.tools.polygon import PolygonAggregates
 from langchain_community.utilities.polygon import PolygonAPIWrapper
 
 # Cargar configuración
-load_dotenv(dotenv_path=Path(__file__).resolve().parents[2] / '.env')
+
+env_path = Path(__file__).resolve().parents[2] / ".env"
+if env_path.exists():
+    load_dotenv(dotenv_path=env_path)
 polygon_wrapper = PolygonAPIWrapper(polygon_api_key=os.getenv("POLYGON_API_KEY"))
 polygon_tool = PolygonAggregates(api_wrapper=polygon_wrapper)
 

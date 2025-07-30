@@ -1,5 +1,5 @@
 from datetime import datetime
-from backend.database.supabase_client import get_supabase_client
+from database.supabase_client import get_supabase_client
 
 def log_post_to_supabase(data: dict):
     client = get_supabase_client()

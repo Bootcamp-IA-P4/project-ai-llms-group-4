@@ -1,6 +1,6 @@
-from backend.vector_db.db_manager import search_similar
-from backend.generator import generate_text
-from backend.image_generator import generate_image_url
+from vector_db.db_manager import search_similar
+from generator import generate_text
+from image_generator import generate_image_url
 
 def get_language_instruction(language):
     return {

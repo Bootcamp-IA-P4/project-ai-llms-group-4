@@ -6,8 +6,9 @@ from langchain_groq import ChatGroq
 from langchain.prompts import PromptTemplate
 
 # Cargar las variables de entorno desde el archivo .env
-load_dotenv(dotenv_path=Path(__file__).resolve().parents[2] / '.env')
-
+env_path = Path(__file__).resolve().parents[2] / ".env"
+if env_path.exists():
+    load_dotenv(dotenv_path=env_path)
 # Configurar el modelo Groq
 groq_llm = ChatGroq(
     groq_api_key=os.getenv("GROQ_API_KEY"),

@@ -1,7 +1,7 @@
-from .models import ImagePrompt
-from .utils import image_output
+from models import ImagePrompt
+from utils import image_output
 from dotenv import load_dotenv
-# Load environment variables from .env file
+# Load environment variables from env file
 load_dotenv()
 import argparse
 from diffusers import StableDiffusionPipeline, StableDiffusionImg2ImgPipeline

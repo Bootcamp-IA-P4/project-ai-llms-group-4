@@ -1,6 +1,6 @@
 from typing import List, Optional, Dict, Any
-from .supabase_client import get_supabase_client
-from backend.financial.models import FinancialNewsRequest
+from supabase_client import get_supabase_client
+from financial.models import FinancialNewsRequest
 
 def save_financial_news_record(
     request: FinancialNewsRequest,

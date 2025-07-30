@@ -1,9 +1,9 @@
-from .models import ImagePrompt
-from .utils import image_output
+from models import ImagePrompt
+from utils import image_output
 import argparse
 import requests
 from dotenv import load_dotenv  
-load_dotenv()  # Load environment variables from .env file
+load_dotenv()  # Load environment variables from env file
 import os
 
 default_image_prompt = ImagePrompt(

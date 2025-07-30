@@ -3,12 +3,14 @@ import requests
 from dotenv import load_dotenv
 from pathlib import Path
 import base64
-from backend.img_gen.main import generate_post_image
+from img_gen.main import generate_post_image
 from pathlib import Path
 import time
 
 # Cargar .env desde la raíz del proyecto
-load_dotenv(dotenv_path=Path(__file__).resolve().parents[1] / ".env")
+env_path = Path(__file__).resolve().parents[1] / ".env"
+if env_path.exists():
+    load_dotenv(dotenv_path=env_path)
 
 API_KEY = os.getenv("STABILITY_API_KEY")
 API_URL = "https://api.stability.ai/v2beta/stable-image/generate/core"

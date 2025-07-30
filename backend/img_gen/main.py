@@ -2,14 +2,14 @@ import argparse
 import os
 from dotenv import load_dotenv
 load_dotenv()
-from .models import ImagePrompt
-from .utils import detect_and_translate, translate_image_prompt, is_ollama_installed, is_ollama_running, running_in_docker
+from models import ImagePrompt
+from utils import detect_and_translate, translate_image_prompt, is_ollama_installed, is_ollama_running, running_in_docker
 docker = False
 if running_in_docker() is False:    
-    from .diffusers import main as diffusers_prompt
-from .stability import main as stability_prompt
-from .unsplash import main as unsplash_prompt
-from .pexels import main as pexels_prompt
+    from diffusers import main as diffusers_prompt
+from stability import main as stability_prompt
+from unsplash import main as unsplash_prompt
+from pexels import main as pexels_prompt
 
 pipe = None
 output_dir = "backend/img_gen/output"

@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from backend.agents.agent import writing_agent, research_agent
+from agents.agent import writing_agent, research_agent
 from langsmith import traceable
 
 load_dotenv()

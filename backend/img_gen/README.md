@@ -61,7 +61,7 @@ This module is part of **Project AI LLMS Group 4** and provides an image generat
 1. Import the generate_post_image function from the img_gen module:
 
     ```python
-    from backend.img_gen.main import generate_post_image
+    from img_gen.main import generate_post_image
     generate_post_image(img_prompt, model, None)
     ```
 2. Call the function with the desired parameters:

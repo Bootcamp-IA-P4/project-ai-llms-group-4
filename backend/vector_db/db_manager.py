@@ -4,10 +4,12 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_pinecone import Pinecone as PineconeVectorStore
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from pathlib import Path
-from .document_reader import extract_text_from_file
+from document_reader import extract_text_from_file
 
 # Cargamos las variables de entorno
-load_dotenv(dotenv_path=Path(__file__).resolve().parents[2] / ".env")
+env_path = Path(__file__).resolve().parents[2] / ".env"
+if env_path.exists():
+    load_dotenv(dotenv_path=env_path)
 
 # Inicializamos el modelo de embeddings que convertirá texto en vectores numéricos
 embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
