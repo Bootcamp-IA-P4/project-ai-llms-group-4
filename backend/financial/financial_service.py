@@ -1,9 +1,9 @@
 import os
 from datetime import datetime
 from typing import Dict, Any
-from models import FinancialNewsRequest
-from financial_tools import get_stock_data, format_market_data_for_llm
-from financial_chain import generate_financial_news as generate_news_with_llm
+from .models import FinancialNewsRequest
+from .financial_tools import get_stock_data, format_market_data_for_llm
+from .financial_chain import generate_financial_news as generate_news_with_llm
 import time
 
 def generate_financial_news(request: FinancialNewsRequest) -> Dict[str, Any]:

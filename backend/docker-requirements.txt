@@ -14,10 +14,6 @@ pymupdf
 # General Requirements
 argparse
 dotenv
-#Stable Diffusion Model Requirements
-# transformers
-# accelerate
-# safetensors
 
 # Translation Requirements
 langdetect

@@ -17,4 +17,7 @@ tmp/
 README.md
 
 # Diffusers
-diffusers.py
+.diffusers.py
+backend/diffusers.py
+.backend/diffusers.py
+*diffusers.py

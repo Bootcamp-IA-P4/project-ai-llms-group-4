@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from database.supabase_client import get_supabase_client
+from .supabase_client import get_supabase_client
 
 def upload_image_to_supabase(local_path: str, bucket_name="posts") -> str:
     """

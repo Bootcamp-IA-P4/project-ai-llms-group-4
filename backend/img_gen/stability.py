@@ -1,5 +1,5 @@
-from models import ImagePrompt
-from utils import image_output
+from .models import ImagePrompt
+from .utils import image_output
 import argparse
 import requests
 from dotenv import load_dotenv  

@@ -2,8 +2,8 @@ import requests
 import os
 import argparse
 from dotenv import load_dotenv
-from models import ImagePrompt
-from utils import extract_keywords, download_image_from_url, get_image_base64_from_url
+from .models import ImagePrompt
+from .utils import extract_keywords, download_image_from_url, get_image_base64_from_url
 
 load_dotenv()
 PEXELS_API_KEY = os.getenv("PEXELS_API_KEY")

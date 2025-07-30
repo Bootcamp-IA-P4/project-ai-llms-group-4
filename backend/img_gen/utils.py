@@ -4,7 +4,7 @@ import io
 import base64
 from langdetect import detect
 from deep_translator import GoogleTranslator
-from models import ImagePrompt
+from .models import ImagePrompt
 from keybert import KeyBERT
 import requests
 import subprocess
