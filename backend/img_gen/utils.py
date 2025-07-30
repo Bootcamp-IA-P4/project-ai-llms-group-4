@@ -4,8 +4,61 @@ import io
 import base64
 from langdetect import detect
 from deep_translator import GoogleTranslator
+from .models import ImagePrompt
 from keybert import KeyBERT
 import requests
+import subprocess
+
+
+# OLLAMA FUNCTIONS
+
+def is_ollama_installed():
+    try:
+        result = subprocess.run(["ollama", "--version"], capture_output=True, text=True, check=True)
+        print(f"Ollama installed. Version: {result.stdout.strip()}")
+        return True
+    except FileNotFoundError:
+        print("❌ Ollama is not installed. Please install it from https://ollama.com/docs/installation.")
+        return False
+    except subprocess.CalledProcessError as e:
+        print(f"⚠️ Error trying to run Ollama: {e}")
+        return False
+def is_ollama_running(host="http://localhost:11434") -> bool:
+    try:
+        response = requests.get(f"{host}/api/tags", timeout=2)
+        return True
+    except requests.exceptions.RequestException:
+        print("❌ Ollama is not running. Please start it from https://ollama.com/docs/installation.")
+        return False
+    
+# STRING FUNCTIONS
+
+def detect_and_translate(text: str) -> str:
+    text = text.replace("#", "").strip()  # Remove hashtags and extra spaces
+    detected_lang = detect(text)
+    print(f"🌍 Detected language: {detected_lang}")
+    if detected_lang != "en":
+        translated = GoogleTranslator(source='auto', target='en').translate(text)
+        print(f"🌐 Translated text: {translated}")
+        return translated
+    return text
+
+def translate_image_prompt(prompt: ImagePrompt) -> ImagePrompt:
+    translated_fields = {}
+    for key, value in prompt.__dict__.items():
+        if isinstance(value, str) and value.strip() != "":
+            translated_fields[key] = detect_and_translate(value)
+        else:
+            translated_fields[key] = value
+    return ImagePrompt(**translated_fields)
+
+def extract_keywords(text, top_n=5):
+    kw_model = KeyBERT()
+    keywords = kw_model.extract_keywords(text, top_n=top_n, stop_words='english')
+    print(f"🔑 Extracted keywords: {keywords}")
+    return [kw for kw, score in keywords]
+
+# IMAGE FUNCTIONS
 
 def Image2Base64(image: Image.Image) -> str:
     """
@@ -56,38 +109,16 @@ def save_image(image, filepath):
         new_filepath = filepath
         counter = 1
 
-        while os.path.exists(new_filepath):
-            respuesta = input(f"⚠️ File '{new_filepath}' already exists. Overwrite? (y/n): ").strip().lower()
-            if respuesta == 'y':
-                break
-            else:
-                new_filepath = f"{base}_{counter}{ext}"
-                counter += 1
-        
+        # Si el archivo existe, simplemente lo sobrescribimos
+        if os.path.exists(new_filepath):
+            print(f"⚠️ Overwriting existing file: {new_filepath}")
+
         image.save(new_filepath)
         print(f"💾 Image saved to {new_filepath}")
 
     except Exception as e:
         print(f"Error saving image: {e}")
         exit(1)
-
-
-def detect_and_translate(text: str) -> str:
-    text = text.replace("#", "").strip()  # Remove hashtags and extra spaces
-    detected_lang = detect(text)
-    print(f"🌍 Detected language: {detected_lang}")
-    if detected_lang != "en":
-        translated = GoogleTranslator(source='auto', target='en').translate(text)
-        print(f"🌐 Translated text: {translated}")
-        return translated
-    return text
-
-
-def extract_keywords(text, top_n=5):
-    kw_model = KeyBERT()
-    keywords = kw_model.extract_keywords(text, top_n=top_n, stop_words='english')
-    print(f"🔑 Extracted keywords: {keywords}")
-    return [kw for kw, score in keywords]
 
 def download_image_from_url(url, output_path="output/output.jpg"):
     img_data = requests.get(url).content
@@ -102,3 +133,7 @@ def get_image_base64_from_url(url):
         return f"data:image/png;base64,{base64_image}"
     else:
         raise Exception(f"Error al descargar imagen: {response.status_code}")
+
+
+
+
