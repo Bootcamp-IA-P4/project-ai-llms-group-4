@@ -1,18 +1,28 @@
-version: '3.9'
+version: "3.9"
 
 services:
   backend:
-    build: ./backend
+    build:
+      context: ./backend
     container_name: backend
     ports:
       - "8000:8000"
-    environment:
-      - ENV=production
+    volumes:
+      # Cache for HuggingFace models (persist between runs)
+      - hf-cache:/data/hf-cache
+    env_file:
+      - .env
+    restart: unless-stopped
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
     container_name: frontend
     ports:
-      - "3000:3000"    # Map container port 3000 (Node default) to host 3000
-    depends_on:
-      - backend
+      - "3000:3000"
+    env_file:
+      - .env
+    restart: unless-stopped
+
+volumes:
+  hf-cache:
