@@ -136,4 +136,14 @@ def get_image_base64_from_url(url):
 
 
 
-
+# docker
+def running_in_docker() -> bool:
+    # Primary check
+    if os.path.exists("/.dockerenv"):
+        return True
+    # Fallback: look at cgroup info
+    try:
+        with open("/proc/1/cgroup", "rt") as f:
+            return "docker" in f.read() or "containerd" in f.read()
+    except FileNotFoundError:
+        return False

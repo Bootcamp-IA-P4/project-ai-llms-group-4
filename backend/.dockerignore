@@ -1,0 +1,20 @@
+# Ignore Python caches
+__pycache__/
+*.pyc
+
+# Ignore environment files
+.env
+.env.*
+
+# Ignore venvs
+.venv/
+
+# Ignore local data
+data/
+tmp/
+
+# Ignore anything else you don’t want in the image
+README.md
+
+# Diffusers
+diffusers.py

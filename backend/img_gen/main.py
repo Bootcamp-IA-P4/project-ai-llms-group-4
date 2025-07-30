@@ -3,8 +3,10 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 from .models import ImagePrompt
-from .utils import detect_and_translate, translate_image_prompt, is_ollama_installed, is_ollama_running
-from .diffusers import main as diffusers_prompt
+from .utils import detect_and_translate, translate_image_prompt, is_ollama_installed, is_ollama_running, running_in_docker
+docker = False
+if running_in_docker() is False:    
+    from .diffusers import main as diffusers_prompt
 from .stability import main as stability_prompt
 from .unsplash import main as unsplash_prompt
 from .pexels import main as pexels_prompt
@@ -36,13 +38,16 @@ def generate_post_image(prompt, model, output_path: str = output_path):
     print(f"Model: {model}") # Debugging statement
     model_environment, model_name = model.split(":")
     if model_environment == "local":
-            print("Generating image using local model...") # Debugging statement
-            if not is_ollama_installed():
-                raise OSError("Ollama is not installed. Please install Ollama to use the local model.")
-            elif not is_ollama_running():
-                raise OSError("Ollama is not running. Please start Ollama to use the local model.")
+            if docker == False:
+                print("Generating image using local model...") # Debugging statement
+                if not is_ollama_installed():
+                    raise OSError("Ollama is not installed. Please install Ollama to use the local model.")
+                elif not is_ollama_running():
+                    raise OSError("Ollama is not running. Please start Ollama to use the local model.")
+                else:
+                    return diffusers_prompt(prompt, output_path)
             else:
-                return diffusers_prompt(prompt, output_path)
+                raise OSError("Local model is not supported in Docker environment. Please run outside of Docker to use the local model.")
     elif model_environment == "remote":
         if model_name == "all":
             try:
