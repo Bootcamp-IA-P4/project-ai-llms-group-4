@@ -9,10 +9,14 @@ from .image_generator import generate_image_url
 from backend.financial.models import FinancialNewsRequest
 from backend.financial.financial_service import generate_financial_news
 from backend.vector_db.db_manager import save_post, search_similar, ingest_document
+from fastapi import Body
+from backend.cience_data.arxiv import search_arxiv, download_and_extract, ingest_arxiv_documents, create_arxiv_rag_chain
 from backend.vector_db.document_reader import extract_text_from_file
 from backend.database.supabase_logger import log_post_to_supabase
 from backend.database.storage import upload_image_to_supabase
 from backend.database.storage import upload_document_to_supabase
+from backend.database.supabase_logger import log_post_to_supabase
+from backend.database.storage import upload_image_to_supabase
 
 app = FastAPI()
 
@@ -32,9 +36,10 @@ class ContentRequest(BaseModel):
     company: Optional[str] = None
     tone: str
     language: str
+    model_writer: str 
+    model_research: Optional[str] = None
     audience: Optional[str] = None
     img_model: Optional[str] = "remote:all"
-    model: str
     generate_image: bool = True
 
 class SearchRequest(BaseModel):
@@ -46,23 +51,41 @@ class SearchResult(BaseModel):
     metadata: Dict[str, Any]
     similarity_score: float
 
+class ArxivIngestRequest(BaseModel):
+    topic: str
+    max_papers: Optional[int] = 3
+
+class ArxivQueryRequest(BaseModel):
+    question: str
+
 @app.get("/")
 def read_root():
     return {"message": "✅ API en funcionamiento"}
 
 @app.post("/generate")
 def generate_content(data: ContentRequest):
+    """
+    1️⃣ Genera el texto y el prompt usado.
+    2️⃣ (Opcional) Genera imagen usando el texto generado como prompt.
+    3️⃣ Guarda todo en la base vectorial.
+    4️⃣ Devuelve los resultados al frontend.
+    """
+    # Fallback: si no se proporciona model_research, usa el mismo que model_writer
+    model_research = data.model_research or data.model_writer
+
+    # 1️⃣ Generar texto y prompt real
     text, prompt_used = generate_text_with_context(
         topic=data.topic,
         platform=data.platform,
         company=data.company,
         tone=data.tone,
         language=data.language,
-        model=data.model,
-        img_model=data.img_model,
+        model_writer=data.model_writer,
+        model_research=model_research,
         audience=data.audience
     )
 
+        # 2️⃣ (Opcional) Generar imagen
     image_url = None
     if data.generate_image:
         image_path = generate_image_url(text, data.img_model)
@@ -87,10 +110,12 @@ def generate_content(data: ContentRequest):
         company=data.company,
         language=data.language,
         audience=data.audience,
-        model=data.model,
+        model=data.model_writer,
         image_url=image_url
     )
 
+    # 4️⃣ Devolver resultado
+    # 5️⃣ Guardar en Supabase (relacional)
     log_post_to_supabase({
         "prompt": prompt_used,
         "text": text,
@@ -99,13 +124,14 @@ def generate_content(data: ContentRequest):
         "company": data.company,
         "language": data.language,
         "audience": data.audience,
-        "model": data.model,
+        "model": data.model_writer,
         "image_url": image_url
     })
 
+    # 6️⃣ Devolver al frontend
     return {
         "text": text,
-        "image": image_url
+        "image_url": image_url
     }
 
 @app.post("/financial-news")
@@ -166,7 +192,8 @@ def upload_document(
         company=company,
         tone=tone,
         language=language,
-        model=model,
+        model_writer=model,
+        model_research=model,
         img_model=img_model,
         audience=audience,
         extra_context=extra_context
@@ -214,7 +241,7 @@ def index_document(file: UploadFile = File(...)):
     temp_path = temp_dir / file.filename
     with open(temp_path, "wb") as f:
         f.write(file.file.read())
-
+    
     try:
         ingest_document(temp_path, source_name=file.filename)
         return {"message": f"✅ Documento {file.filename} indexado correctamente."}
@@ -223,3 +250,29 @@ def index_document(file: UploadFile = File(...)):
     finally:
         if os.path.exists(temp_path):
             os.remove(temp_path)
+
+
+@app.post("/arxiv_ingest")
+def arxiv_ingest(data: ArxivIngestRequest):
+    papers = search_arxiv(data.topic, max_results=data.max_papers)
+    if not papers:
+        return {"message": "No se encontraron papers."}
+    
+    docs = []
+    for paper in papers:
+        try:
+            text, source = download_and_extract(paper["pdf_url"], paper["id"])
+            docs.append((text, source))
+        except Exception as e:
+            print(f"❌ Error con {paper['title']}: {e}")
+
+    ingest_arxiv_documents(docs)
+    return {"message": f"{len(docs)} papers indexados correctamente."}
+
+
+
+@app.post("/arxiv_query")
+def arxiv_query(data: ArxivQueryRequest):
+    rag = create_arxiv_rag_chain()
+    answer = rag.run(data.question)
+    return {"question": data.question, "answer": answer}
