@@ -37,11 +37,18 @@ deep-translator
 keybert
 
 # bbdd Requirements
-
 langchain
 langchain-pinecone
 langchain-huggingface
 python-dotenv
 pinecone
 
+<<<<<<< HEAD
 python-multipart
+=======
+# document reader Requirements
+python-docx 
+PyMuPDF 
+markdown
+chardet
+>>>>>>> 8c222af33e2ff1e81af16f5a8c1968613651d734

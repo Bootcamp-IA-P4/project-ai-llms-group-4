@@ -4,6 +4,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_pinecone import Pinecone as PineconeVectorStore
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from pathlib import Path
+from .document_reader import extract_text_from_file
 
 # Cargamos las variables de entorno
 load_dotenv()
@@ -65,8 +66,9 @@ def ingest_document(file_path: str, source_name: str = None):
     - source_name: Nombre identificador del documento (opcional)
     """
         # 1. Lee el documento
-    with open(file_path, "r", encoding="utf-8") as f:
-            content = f.read()
+    
+    content = extract_text_from_file(file_path)
+
 
         # 2. Divide en chunks para mejorar la búsqueda semántica
     splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)

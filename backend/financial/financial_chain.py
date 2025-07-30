@@ -1,4 +1,5 @@
 import os
+import re 
 from dotenv import load_dotenv
 from pathlib import Path
 from langchain_groq import ChatGroq
@@ -69,9 +70,35 @@ def clean_llm_response(raw_response: str) -> str:
         if cleaned.lower().startswith(prefix.lower()):
             cleaned = cleaned[len(prefix):].strip()
     
+    # Eliminar formato markdown
+    cleaned = re.sub(r'\*\*(.*?)\*\*', r'\1', cleaned)  # **texto** → texto
+    cleaned = re.sub(r'\*(.*?)\*', r'\1', cleaned)      # *texto* → texto
+    cleaned = re.sub(r'`(.*?)`', r'\1', cleaned)        # `código` → código
+    cleaned = re.sub(r'#{1,6}\s*', '', cleaned)         # # Título → Título
+    cleaned = re.sub(r'\[(.*?)\]\(.*?\)', r'\1', cleaned)  # [texto](url) → texto
+    cleaned = re.sub(r'>\s*', '', cleaned)              # > cita → cita
+    cleaned = re.sub(r'^[-*+]\s+', '', cleaned, flags=re.MULTILINE)  # - lista → lista
+    cleaned = re.sub(r'^\d+\.\s+', '', cleaned, flags=re.MULTILINE)  # 1. lista → lista
+
     # Eliminar saltos de línea excesivos
     while "\n\n\n" in cleaned:
         cleaned = cleaned.replace("\n\n\n", "\n\n")
+    
+    # Mejorar separación de párrafos para mejor legibilidad
+    lines = cleaned.split('\n')
+    improved_lines = []
+    
+    for i, line in enumerate(lines):
+        improved_lines.append(line)
+        # Si la línea actual no está vacía y la siguiente tampoco, agregar salto extra
+        if (line.strip() and 
+            i < len(lines) - 1 and 
+            lines[i + 1].strip() and 
+            not line.endswith(':') and  # No duplicar en listas de datos
+            len(line.strip()) > 30):     # Solo en párrafos largos
+            improved_lines.append('')   # Línea vacía extra
+    
+    cleaned = '\n'.join(improved_lines)
     
     return cleaned.strip()
 
@@ -133,6 +160,13 @@ def generate_financial_news(topic: str, language: str, market_data: str) -> str:
             "language_instruction": language_instruction,
             "market_data": market_data,
             "topic": topic
+        }, config={
+            "tags": ["financial-news", "groq-llm"],
+            "metadata": {
+                "service": "financial-news",
+                "language": language,
+                "topic": topic
+            }
         })
         
         # Extraer el contenido del resultado

@@ -1,5 +1,6 @@
 import os
-from fastapi import FastAPI, UploadFile, File
+from pathlib import Path
+from fastapi import FastAPI, UploadFile, File, Form
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,8 +9,10 @@ from .image_generator import generate_image_url
 from backend.financial.models import FinancialNewsRequest
 from backend.financial.financial_service import generate_financial_news
 from backend.vector_db.db_manager import save_post, search_similar, ingest_document
+from backend.vector_db.document_reader import extract_text_from_file
 from backend.database.supabase_logger import log_post_to_supabase
 from backend.database.storage import upload_image_to_supabase
+from backend.database.storage import upload_document_to_supabase
 
 app = FastAPI()
 
@@ -22,7 +25,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Modelo de entrada
+# Modelos
 class ContentRequest(BaseModel):
     topic: str
     platform: str
@@ -30,16 +33,14 @@ class ContentRequest(BaseModel):
     tone: str
     language: str
     audience: Optional[str] = None
-    img_model: Optional[str] = "stability"
+    img_model: Optional[str] = "remote:all"
     model: str
     generate_image: bool = True
 
-    # Modelo de entrada para búsqueda
 class SearchRequest(BaseModel):
     query: str
     top_k: Optional[int] = 3
 
-# Modelo de resultado de búsqueda (opcional, mejora tipado/documentación)
 class SearchResult(BaseModel):
     text: str
     metadata: Dict[str, Any]
@@ -51,15 +52,6 @@ def read_root():
 
 @app.post("/generate")
 def generate_content(data: ContentRequest):
-    """
-    1️⃣ Genera texto e imagen (opcional).
-    2️⃣ Sube imagen a Supabase Storage (si existe).
-    3️⃣ Guarda en Pinecone (vectorial).
-    4️⃣ Guarda en Supabase (relacional).
-    5️⃣ Devuelve respuesta.
-    """
-
-    # 1️⃣ Generar texto y prompt real
     text, prompt_used = generate_text_with_context(
         topic=data.topic,
         platform=data.platform,
@@ -71,7 +63,6 @@ def generate_content(data: ContentRequest):
         audience=data.audience
     )
 
-        # 2️⃣ (Opcional) Generar imagen
     image_url = None
     if data.generate_image:
         image_path = generate_image_url(text, data.img_model)
@@ -88,7 +79,6 @@ def generate_content(data: ContentRequest):
         else:
             print("⚠️ No se generó imagen válida")
 
-    # 4️⃣ Guardar en Pinecone (vectorial)
     save_post(
         text=text,
         prompt=prompt_used,
@@ -101,7 +91,6 @@ def generate_content(data: ContentRequest):
         image_url=image_url
     )
 
-    # 5️⃣ Guardar en Supabase (relacional)
     log_post_to_supabase({
         "prompt": prompt_used,
         "text": text,
@@ -114,60 +103,123 @@ def generate_content(data: ContentRequest):
         "image_url": image_url
     })
 
-    # 6️⃣ Devolver al frontend
     return {
         "text": text,
         "image": image_url
     }
 
-
-# Endpoint para crear noticias financieras
 @app.post("/financial-news")
 def financial_news_endpoint(data: FinancialNewsRequest):
-    """
-    - Recibe: topic, company, language
-    - Devuelve: noticia financiera profesional con datos actualizados para la empresa específica
-    """
     return generate_financial_news(data)
 
-# Endpoint para obtener noticias financieras
 @app.get("/financial-news")
 def get_financial_news_endpoint(limit: int = 10):
-    """
-    - Obtiene: noticias financieras recientes con fechas en español
-    - Parámetros: limit (opcional, default=10)
-    - Devuelve: lista de noticias ordenadas por fecha
-    """
     from backend.database.repository import get_recent_financial_news
     return get_recent_financial_news(limit)
 
 @app.post("/search")
 def search_content(data: SearchRequest):
-    """
-    Endpoint para buscar posts similares semánticamente en la base de datos vectorial.
-    """
     results = search_similar(data.query, top_k=data.top_k)
-
-    output: List[SearchResult] = []
-    for doc, score in results:
-        output.append(SearchResult(
+    output: List[SearchResult] = [
+        SearchResult(
             text=doc.page_content,
             metadata=doc.metadata,
             similarity_score=round(score, 3)
-        ))
+        )
+        for doc, score in results
+    ]
     return {"results": output}
 
 @app.post("/upload_document")
-def upload_document(file: UploadFile = File(...)):
-    """
-    Sube e indexa un archivo de texto para consultas semánticas.
-    """
-    temp_path = f"tmp_{file.filename}"
+def upload_document(
+    topic: str = Form(...),
+    platform: str = Form(...),
+    tone: str = Form(...),
+    language: str = Form(...),
+    model: str = Form(...),
+    img_model: str = Form("remote:all"),
+    audience: str = Form(None),
+    company: str = Form(None),
+    file: Optional[UploadFile] = File(None)
+):
+    extra_context = ""
+    file_url = None
+
+    if file:
+        temp_dir = Path("backend/tmp_docs")
+        temp_dir.mkdir(parents=True, exist_ok=True)
+        temp_path = temp_dir / file.filename
+        with open(temp_path, "wb") as f_out:
+            f_out.write(file.file.read())
+
+        extra_context = extract_text_from_file(temp_path)
+        ingest_document(temp_path, source_name=file.filename)
+        file_url = upload_document_to_supabase(temp_path)
+
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+
+
+    text, prompt_used = generate_text_with_context(
+        topic=topic,
+        platform=platform,
+        company=company,
+        tone=tone,
+        language=language,
+        model=model,
+        img_model=img_model,
+        audience=audience,
+        extra_context=extra_context
+    )
+
+    image_url = None
+    if img_model:
+        image_path = generate_image_url(text, img_model)
+        if image_path and os.path.exists(image_path):
+            uploaded_url = upload_image_to_supabase(image_path)
+            if uploaded_url and uploaded_url.startswith("http"):
+                image_url = uploaded_url
+            os.remove(image_path)
+
+    log_post_to_supabase({
+        "prompt": prompt_used,
+        "text": text,
+        "platform": platform,
+        "tone": tone,
+        "company": company,
+        "language": language,
+        "audience": audience,
+        "model": model,
+        "image_url": image_url,
+        "doc_url": file_url
+    })
+
+    return {
+        "text": text,
+        "prompt": prompt_used,
+        "image": image_url,
+        "doc_url": file_url
+    }
+
+@app.post("/index_document")
+def index_document(file: UploadFile = File(...)):
+    allowed_extensions = {".txt", ".pdf", ".docx", ".md"}
+    ext = os.path.splitext(file.filename)[1].lower()
+
+    if ext not in allowed_extensions:
+        return {"error": f"❌ Tipo de archivo no permitido: {ext}"}
+
+    temp_dir = Path("backend/tmp_docs")
+    temp_dir.mkdir(parents=True, exist_ok=True)
+    temp_path = temp_dir / file.filename
     with open(temp_path, "wb") as f:
         f.write(file.file.read())
 
-    ingest_document(temp_path, source_name=file.filename)
-
-    # Limpia el archivo temporal
-    os.remove(temp_path)
-    return {"message": f"Documento {file.filename} indexado correctamente."}
+    try:
+        ingest_document(temp_path, source_name=file.filename)
+        return {"message": f"✅ Documento {file.filename} indexado correctamente."}
+    except Exception as e:
+        return {"error": f"❌ Error al procesar el archivo: {str(e)}"}
+    finally:
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
