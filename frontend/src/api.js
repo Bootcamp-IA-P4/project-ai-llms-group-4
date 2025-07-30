@@ -20,6 +20,11 @@ api.interceptors.response.use(
 
 export const generateContent = async (formData) => {
   try {
+    // Si se solicita imagen, forzar modelo 'remote:all' para máxima compatibilidad
+    let img_model = formData.img_model;
+    if (formData.generateImage) {
+      img_model = 'remote:all';
+    }
     const requestData = {
       topic: formData.topic,
       platform: formData.platform,
@@ -27,7 +32,7 @@ export const generateContent = async (formData) => {
       tone: formData.tone,
       language: formData.language === 'Español' ? 'es' : formData.language === 'Inglés' ? 'en' : formData.language === 'Francés' ? 'fr' : 'it',
       audience: formData.audience,
-      img_model: 'remote',
+      img_model: img_model,
       model: formData.model,
       generate_image: formData.generateImage
     };

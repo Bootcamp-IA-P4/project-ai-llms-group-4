@@ -50,7 +50,7 @@
   border-width: 0;
 }
 
-/* Create enhanced contrast version for users with reduced contrast preferences */
+
 @media (prefers-contrast: more) {
   .mp-pro-title {
     background: #0a2d75;
@@ -137,7 +137,7 @@
   padding: 20px;
 }
 
-/* Placeholders visibles y elegantes como en el resto de la app */
+
 .form-input::placeholder,
 input::placeholder,
 textarea::placeholder {
