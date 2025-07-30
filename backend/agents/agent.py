@@ -10,25 +10,30 @@ def get_language_instruction(language):
         "Italiano": "Comunica in italiano con calore e autenticità, come se stessi avendo una conversazione amichevole con qualcuno a cui tieni."
     }.get(language, "Comunícate en español de manera natural y fluida, como si estuvieras conversando con alguien que valoras mucho.")
 
-# def get_tone_guidance(tone):
-#     tone_guides = {
-#         "profesional": "Adopta un tono profesional pero cálido. Sé experto sin ser intimidante, confiable sin ser rígido.",
-#         "casual": "Usa un tono relajado y conversacional, como si estuvieras charlando con un buen amigo sobre algo que te apasiona.",
-#         "formal": "Mantén un registro formal pero no frío. Sé respetuoso, preciso y elegante en tu expresión.",
-#         "divertido": "Sé entretenido y ligero, pero siempre manteniendo el valor del contenido. Usa humor inteligente cuando sea apropiado.",
-#         "educativo": "Adopta el tono de un mentor paciente que genuinamente quiere que su audiencia aprenda y crezca.",
-#         "inspiracional": "Sé motivador y positivo, pero auténtico. Evita clichés y enfócate en insights reales y valiosos."
-#     }
-#     return tone_guides.get(tone.lower(), "Mantén un tono equilibrado que sea apropiado para el contexto y la audiencia.")
+def research_agent(topic: str, company: str, top_k: int = 5, model: str = "llama3-8b-8192") -> str:
+        context_text = ""
+        try:
+            company_clean = company.strip().lower() if company else ""
+            context_results = search_similar(topic, top_k=top_k)
+            score_minimo = 0.65
+            empresa_actual = company_clean if company_clean else None
 
-def research_agent(topic: str, company: str, top_k: int = 3, model: str = "llama3-8b-8192") -> str:
-    if company and company.strip().lower() == "ruiztech":
-        context_results = search_similar(topic, top_k=top_k)
+            contexto_filtrado = [
+                doc.page_content for doc, score in context_results
+                if score >= score_minimo
+                and (not empresa_actual or doc.metadata.get("company", "").lower() == empresa_actual)
+            ]
 
-        context = "\n".join([doc.page_content for doc, _ in context_results])
+            if contexto_filtrado:
+                context_text = "\n".join(contexto_filtrado)
+                print("🧠 Contexto añadido al prompt desde Pinecone:\n")
+                for fragmento in contexto_filtrado:
+                    print(f"- {fragmento[:120]}...")
 
-        return context
-    return ""
+        except Exception as e:
+            print(f"⚠️ Error al recuperar contexto desde Pinecone: {e}")
+    
+        return context_text
 
 
 def writing_agent(topic, platform, tone, company, language, audience, context, model: str) -> (str, str):
@@ -48,7 +53,3 @@ Debe ser directo, atractivo y adecuado para esa audiencia {audience}."""
     model = "llama-3.3-70b-versatile"
     text = generate_text(base_prompt, model=model)
     return text, base_prompt
-
-
-def image_agent(prompt: str, model: str = "stability") -> str:
-    return generate_image_url(prompt, model)
