@@ -150,9 +150,6 @@ def generate_financial_news(topic: str, language: str, market_data: str) -> str:
     - El topic del usuario
     
     Y lo envía todo estructurado a Groq para generar una noticia profesional.
-    
-    CAMBIO: Ya no tiene fallback - si falla, lanza excepción para que 
-    financial_service.py maneje con su fallback único.
     """
     # Obtener instrucciones específicas de idioma
     language_instruction = get_language_instruction(language)

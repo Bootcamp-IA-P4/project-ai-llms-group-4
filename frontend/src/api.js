@@ -55,18 +55,18 @@ export const searchContent = async (query, topK = 3) => {
     };
 
     const response = await api.post('/search', requestData);
-    return response.data;
+    return response.data.results || [];
   } catch (error) {
     console.error('Error en búsqueda:', error);
     throw error;
   }
 };
 
-// Nueva función para obtener posts recientes
+// ✅ NUEVA FUNCIÓN para obtener posts recientes
 export const getRecentPosts = async (limit = 10) => {
   try {
     const response = await api.get(`/recent-posts?limit=${limit}`);
-    return response.data;
+    return response.data.results || [];
   } catch (error) {
     console.error('Error obteniendo posts recientes:', error);
     throw error;

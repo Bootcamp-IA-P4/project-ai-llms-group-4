@@ -457,6 +457,127 @@
   font-weight: 700;
 }
 
+/* ✅ NUEVOS ESTILOS para feedback visual */
+
+/* Lista de posts seleccionados (similar a uploaded-files-list) */
+.selected-posts-list {
+  margin-top: 8px;
+  padding: 10px 12px;
+  background: #f6fafd;
+  border-radius: 6px;
+  border: 1px solid #e1e5e9;
+  max-width: 300px;
+}
+
+.selected-posts-list h5 {
+  margin: 0 0 8px 0;
+  color: #0a2d75;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.selected-post-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  background: white;
+  border-radius: 4px;
+  margin-bottom: 4px;
+  font-size: 0.85rem;
+  color: #2c3e50;
+  border: 1px solid #e1e5e9;
+  box-shadow: 0 1px 2px rgba(10, 45, 117, 0.05);
+}
+
+.selected-post-item:last-child {
+  margin-bottom: 0;
+}
+
+/* Mensaje de feedback (similar a upload-message) */
+.feedback-message {
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.feedback-message.success {
+  background: #d1edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.feedback-message.error {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+/* Sección de acciones */
+.search-actions {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+  text-align: center;
+}
+
+.close-search-btn {
+  padding: 8px 16px;
+  min-width: 200px;
+  font-size: 0.9rem;
+  border-radius: 25px;
+}
+
+/* Mejora visual para items seleccionados */
+.search-result-item.selected {
+  background: linear-gradient(90deg, #70d3f1 0%, #de99ff 100%);
+  color: #0a2d75;
+  border-color: #70d3f1;
+  font-weight: 600;
+}
+
+.search-result-item:hover {
+  background: linear-gradient(90deg, #70d3f1 0%, #de99ff 100%);
+  color: #0a2d75;
+  box-shadow: 0 2px 8px rgba(112, 211, 241, 0.13);
+  transform: translateY(-1px);
+}
+
+/* Animación de feedback */
+@keyframes feedbackSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.feedback-message {
+  animation: feedbackSlide 0.3s ease-out;
+}
+
+@media (max-width: 600px) {
+  .selected-posts-list {
+    max-width: 100%;
+  }
+  
+  .close-search-btn {
+    min-width: 100%;
+    padding: 10px 16px;
+  }
+  
+  .search-actions {
+    margin-top: 10px;
+    padding-top: 10px;
+  }
+}
+
 @media (max-width: 600px) {
   .search-modal-centered, .search-panel-modal {
     max-width: 98vw;
