@@ -87,7 +87,7 @@ def get_stock_data(company_name: str) -> dict:
     """
     Función principal: Obtiene datos financieros para una empresa
     
-    Estrategia simplificada:
+    Proceso:
     1. Buscar símbolo con Twelve Data (solo búsqueda, plan gratuito)
     2. Obtener datos con Polygon (única fuente de precios)
     3. Si no hay datos, respuesta elegante para análisis general
