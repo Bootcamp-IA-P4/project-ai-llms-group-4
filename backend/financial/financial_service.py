@@ -16,8 +16,6 @@ def generate_financial_news(request: FinancialNewsRequest) -> Dict[str, Any]:
     3. Formatea los datos para el LLM
     4. Genera la noticia financiera profesional
     5. Devuelve todo estructurado
-    
-    Es el "director de orquesta" que coordina todos los demás archivos.
     """
     
     try:
