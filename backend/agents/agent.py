@@ -36,15 +36,16 @@ def research_agent(topic: str, company: str, top_k: int = 5, model: str = "llama
         return context_text
 
 
-def writing_agent(topic, platform, tone, company, language, audience, context, model: str) -> (str, str):
+def writing_agent(topic, platform, tone, company, language, audience, context, model: str, extra_context: str = "") -> tuple[str, str]:
     instruction = get_language_instruction(language)
     audience_text = f"\n🎯 Tu audiencia son: {audience}. Habla su idioma, entiende sus necesidades y conecta con sus intereses genuinos." if audience else ""
     company_text = f"representando la voz auténtica de {company}" if company else "manteniendo una voz profesional pero accesible"
     context_text = f"\n📚 **Información de contexto relevante:**\n{context}\n" if context else ""
+    extra_context_text = f"\n📎 Contexto adicional proporcionado por el usuario:\n{extra_context.strip()}" if extra_context else ""
 
     base_prompt = f"""{instruction}
 
-{context_text}
+{context_text}{extra_context_text}
 
 Escribe un contenido para la plataforma {platform}, sobre el tema: "{topic}" solo adaptate a ese tema, no des mucha información, solo la que pida el usuario.
 Usa un tono {tone.lower()} y adáptalo {company_text}.{audience_text}

@@ -1,9 +1,11 @@
 import os
 from dotenv import load_dotenv
 from backend.agents.agent import writing_agent, research_agent
+from langsmith import traceable
 
 load_dotenv()
 
+@traceable(name="Generación de texto con contexto RAG")
 def generate_text_with_context(
     topic,
     platform,
