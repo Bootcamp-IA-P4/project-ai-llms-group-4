@@ -9,7 +9,6 @@ from .image_generator import generate_image_url
 from backend.financial.models import FinancialNewsRequest
 from backend.financial.financial_service import generate_financial_news
 from backend.vector_db.db_manager import save_post, search_similar, ingest_document
-from backend.agents.agent import image_agent
 from fastapi import Body
 from backend.cience_data.arxiv import search_arxiv, download_and_extract, ingest_arxiv_documents, create_arxiv_rag_chain
 from backend.vector_db.document_reader import extract_text_from_file
@@ -83,17 +82,9 @@ def generate_content(data: ContentRequest):
         language=data.language,
         model_writer=data.model_writer,
         model_research=model_research,
-        img_model=data.img_model,
         audience=data.audience
     )
 
-
-    # 2️⃣ (Opcional) Generar imagen
-    image_url = None
-    if data.generate_image:
-        image_url = image_agent(text, data.img_model)
-
-    # 3️⃣ Guardar en Pinecone (vectorial)
         # 2️⃣ (Opcional) Generar imagen
     image_url = None
     if data.generate_image:
@@ -133,7 +124,7 @@ def generate_content(data: ContentRequest):
         "company": data.company,
         "language": data.language,
         "audience": data.audience,
-        "model": data.model,
+        "model": data.model_writer,
         "image_url": image_url
     })
 

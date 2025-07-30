@@ -46,7 +46,7 @@ def writing_agent(topic, platform, tone, company, language, audience, context, m
 
 {context_text}
 
-Escribe un contenido para la plataforma {platform}, sobre el tema: "{topic}".
+Escribe un contenido para la plataforma {platform}, sobre el tema: "{topic}" solo adaptate a ese tema, no des mucha información, solo la que pida el usuario.
 Usa un tono {tone.lower()} y adáptalo {company_text}.{audience_text}
 Debe ser directo, atractivo y adecuado para esa audiencia {audience}."""
 
