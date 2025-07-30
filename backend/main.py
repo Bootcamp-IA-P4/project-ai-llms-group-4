@@ -163,7 +163,7 @@ def upload_document(
     tone: str = Form(...),
     language: str = Form(...),
     model: str = Form(...),
-    img_model: str = Form("remorte:all"),
+    img_model: str = Form("remote:all"),
     audience: str = Form(None),
     company: str = Form(None),
     file: Optional[UploadFile] = File(None)
