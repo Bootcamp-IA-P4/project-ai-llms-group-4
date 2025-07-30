@@ -14,6 +14,7 @@ def log_post_to_supabase(data: dict):
         "company": data.get("company"),
         "model_used": data.get("model"),
         "image_url": data.get("image_url"),
+        "doc_url": data.get("doc_url"),
         "created_at": datetime.utcnow().isoformat()
     }
     

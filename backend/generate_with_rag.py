@@ -17,42 +17,53 @@ def get_language_instruction(language):
         "Italiano": "Rispondi in italiano con una grammatica corretta e uno stile naturale."
     }.get(language, "Responde en español con corrección y claridad.")
 
-def generate_text_with_context(topic, platform, tone, company, language, model,img_model, audience=None):
+def generate_text_with_context(topic, platform, tone, company, language, model, img_model, audience=None, extra_context=None):
+
     """
-    Genera contenido adaptado al contexto si la empresa es RuizTech.
-    También incorpora información sobre la audiencia objetivo.
+    Genera contenido adaptado al contexto del usuario.
+    Utiliza información anterior desde Pinecone si existe, y adapta el estilo al tono, empresa, plataforma y audiencia indicadas.
     """
     company_clean = company.strip().lower() if company else ""
-    is_ruiztech = company_clean == "ruiztech"
     language_instruction = get_language_instruction(language)
 
     # 🧩 Añadir audiencia si está presente
-    audience_text = f"\nLa audiencia objetivo es: {audience}, utiliza lenguaje específico para esta audiencia" if audience else ""
+    audience_text = f"\nLa audiencia objetivo es: {audience}, utiliza lenguaje específico para esta audiencia." if audience else ""
 
     # Construcción del mensaje principal
     message_base = f"""Escribe un contenido para la plataforma {platform}, sobre el tema: "{topic}"."""
 
-    # Adaptación: si es RuizTech, recupera contexto semántico desde Pinecone
-    if is_ruiztech:
-        # Recuperar fragmentos relevantes de la base vectorial (Pinecone)
-        context_results = search_similar(topic, top_k=3)
-        # Unimos los textos de los resultados (solo el contenido del documento)
-        context = "\n".join([doc.page_content for doc, score in context_results])
+    # Recuperar contexto relevante desde Pinecone (por score y empresa)
+    context_text = ""
+    try:
+        context_results = search_similar(topic, top_k=5)
+        score_minimo = 0.65
+        empresa_actual = company_clean if company_clean else None
 
-        full_prompt = f"""{language_instruction}
+        contexto_filtrado = [
+            doc.page_content for doc, score in context_results
+            if score >= score_minimo
+            and (not empresa_actual or doc.metadata.get("company", "").lower() == empresa_actual)
+        ]
 
-Contexto relevante de la empresa RuizTech:
-{context}
+        if contexto_filtrado:
+            context_text = "\n".join(contexto_filtrado)
+            print("🧠 Contexto añadido al prompt desde Pinecone:\n")
+            for fragmento in contexto_filtrado:
+                print(f"- {fragmento[:120]}...")
 
-{message_base}{audience_text}
-Usa un tono {tone.lower()}, y adapta el mensaje como si fuera publicado por RuizTech.
-Debe ser directo, atractivo y adecuado para esa red social."""
-    else:
-        full_prompt = f"""{language_instruction}
+    except Exception as e:
+        print(f"⚠️ Error al recuperar contexto desde Pinecone: {e}")
+
+         # Añadir contexto adicional del documento (extra_context)
+    extra_context_text = f"\nContexto adicional proporcionado por el usuario:\n{extra_context.strip()}" if extra_context else ""
+
+    # Construcción del prompt con contexto semántico relevante (si existe)
+    contexto_extra = f"\nContexto relevante de publicaciones anteriores:\n{context_text}\n" if context_text else ""
+
+    full_prompt = f"""{language_instruction}
+{contexto_extra}{extra_context_text}
 {message_base}{audience_text}
 Usa un tono {tone.lower()} y adapta el mensaje como si fuera publicado por {company if company else "una empresa"}.
 Debe ser directo, atractivo y adecuado para esa red social."""
 
-    # Retorna también el prompt para mostrarlo en la app
     return generate_text(full_prompt, model), full_prompt
-
