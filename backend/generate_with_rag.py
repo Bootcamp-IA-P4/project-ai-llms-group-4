@@ -14,8 +14,10 @@ def generate_text_with_context(
     language,
     model_writer,
     model_research,
-    audience=None
+    img_model=None,
+    audience=None,
+    extra_context=None
 ):
     context = research_agent(topic, company, model=model_research)
-    text, prompt = writing_agent(topic, platform, tone, company, language, audience, context, model=model_writer)
+    text, prompt = writing_agent(topic, platform, tone, company, language, audience, context, model=model_writer, extra_context=extra_context)
     return text, prompt

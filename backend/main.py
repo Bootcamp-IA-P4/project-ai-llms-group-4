@@ -192,7 +192,8 @@ def upload_document(
         company=company,
         tone=tone,
         language=language,
-        model=model,
+        model_writer=model,
+        model_research=model,
         img_model=img_model,
         audience=audience,
         extra_context=extra_context
