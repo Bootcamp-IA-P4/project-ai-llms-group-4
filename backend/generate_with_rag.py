@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 from backend.vector_db.db_manager import search_similar 
 from backend.generator import generate_text
+from langsmith import traceable
 
 # Cargar variables de entorno si se requieren
 load_dotenv()
@@ -17,6 +18,7 @@ def get_language_instruction(language):
         "Italiano": "Rispondi in italiano con una grammatica corretta e uno stile naturale."
     }.get(language, "Responde en español con corrección y claridad.")
 
+@traceable(name="Generación de texto con contexto RAG")
 def generate_text_with_context(topic, platform, tone, company, language, model, img_model, audience=None, extra_context=None):
 
     """

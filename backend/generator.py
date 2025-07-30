@@ -2,6 +2,7 @@ import os
 import requests
 from dotenv import load_dotenv
 from pathlib import Path
+from langsmith import traceable
 
 # Cargar variables de entorno desde .env en la raíz del proyecto
 load_dotenv(dotenv_path=Path(__file__).resolve().parents[1] / ".env")
@@ -13,6 +14,7 @@ headers = {
     "Content-Type": "application/json"
 }
 
+@traceable(name="Llamada al LLM vía OpenRouter")
 def generate_text(prompt, model):
     payload = {
         "model": model,
