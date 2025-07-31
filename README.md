@@ -24,6 +24,12 @@
 
 ---
 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/53d32404-0493-4978-9117-44a6f0550352" width="500"/>
+  <img src="https://github.com/user-attachments/assets/282efc97-27bc-4ff7-8a5a-48f9690e0be8" width="250"/>
+</p>
+
+---
 ## 📰 Artículo en Medium
 
 [MAGIC POST: El Generador Inteligente de Contenido con IA que Revoluciona el Marketing Empresarial — Léelo en Medium](https://medium.com/@stephylopez3/magic-post-el-generador-inteligente-de-contenido-con-ia-que-revoluciona-el-marketing-empresarial-bbb3507a5337)
@@ -1088,29 +1094,6 @@ Breve descripción de los cambios realizados.
 - [ ] Sin warnings en consola
 ```
 
-### 🏗️ **Arquitectura de Contribución**
-
-```mermaid
-gitgraph
-    commit id: "main"
-    branch develop
-    checkout develop
-    commit id: "setup dev environment"
-    
-    branch feature/new-llm-integration
-    checkout feature/new-llm-integration
-    commit id: "add new LLM provider"
-    commit id: "implement tests"
-    commit id: "update documentation"
-    
-    checkout develop
-    merge feature/new-llm-integration
-    
-    checkout main
-    merge develop
-    tag: "v1.2.0"
-```
-
 ---
 
 ## 📄 Licencia
@@ -1148,7 +1131,7 @@ SOFTWARE.
 - **[@merkandez](https://github.com/merkandez)**
 - **[@peperuizdev](https://github.com/peperuizdev)** 
 - **[@stephyangeles](https://github.com/stephyangeles)** 
-- **[@fergarcat]((https://github.com/fergarcat))**
+- **[@fergarcat](https://github.com/fergarcat)**
 - 
 ### 🙏 **Agradecimientos Especiales**
 - **Bootcamp IA** - Por el marco de aprendizaje y desarrollo
